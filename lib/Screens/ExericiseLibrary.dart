@@ -117,7 +117,4 @@ class ExerciseLibrary extends StatelessWidget {
       ),
     );
   }
-
-
-
 }

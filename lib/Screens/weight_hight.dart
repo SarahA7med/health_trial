@@ -89,7 +89,6 @@ class _WeightHightState extends State<WeightHight> {
                               onChange: (newValue) {
                                 setState(() {
                                   weightval = double.parse(newValue);
-                                  print(weightval);
                                 });
                               },
                             )),
