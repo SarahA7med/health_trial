@@ -58,7 +58,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                       border: Border.all(color: _borderColorMan, width: 4),
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.white,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                             spreadRadius: 5,
                             color: Colors.grey,
