@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/HomeScreen.dart';
 import 'package:health_trial/Screens/gender_selection.dart';
 
+import 'Home_State.dart';
+
 class AuthScreen extends StatefulWidget {
   @override
   _AuthScreenState createState() => _AuthScreenState();
@@ -185,7 +187,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       );
                       Future.delayed(const Duration(seconds: 3), () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Homescreen()));
+                            builder: (context) => HomePage()));
                       });
                     } on FirebaseAuthException catch (e) {
                       String message;
