@@ -53,7 +53,7 @@ class GetStartScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AuthScreen()),
+                    MaterialPageRoute(builder: (context) => const AuthScreen()),
                   );
                 },
                 color: Colors.white,

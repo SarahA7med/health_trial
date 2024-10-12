@@ -11,7 +11,7 @@ class ProfileWidget extends StatelessWidget {
   final double workoutGoalHours; // Goal for workout hours
 
   const ProfileWidget({
-    Key? key,
+    super.key,
     required this.name,
     required this.photoUrl,
     required this.totalWorkoutHours,
@@ -20,7 +20,7 @@ class ProfileWidget extends StatelessWidget {
     required this.height,
     required this.weight,
     required this.workoutGoalHours,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

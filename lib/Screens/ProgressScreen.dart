@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class Progress extends StatefulWidget {
+  const Progress({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _Progress();
@@ -11,8 +12,8 @@ class Progress extends StatefulWidget {
 class _Progress extends State<Progress> {
   String userName="user";
   double progress = 0;
-  Color selectedColor = Color(0xFF004DFF);
-  Color unselectedColor = Color(0xFFB1C8FF); // لون غير محدد
+  Color selectedColor = const Color(0xFF004DFF);
+  Color unselectedColor = const Color(0xFFB1C8FF); // لون غير محدد
   bool day = false;
   double targetWeight = 0;
   double startWeight = 0;
@@ -91,15 +92,15 @@ class _Progress extends State<Progress> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title:Text("✍️Track you progress"),
+          title:const Text("✍️Track you progress"),
           actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
           ],
           backgroundColor: Colors.white,
         ),
         body: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -116,14 +117,14 @@ class _Progress extends State<Progress> {
                         border: Border.all(
                             color: day ? selectedColor : unselectedColor,
                             width: 3),
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        borderRadius: const BorderRadius.all(Radius.circular(15)),
                       ),
                       width: 80,
                       height: 40,
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(3),
-                      margin: EdgeInsets.all(5),
-                      child: Text(
+                      padding: const EdgeInsets.all(3),
+                      margin: const EdgeInsets.all(5),
+                      child: const Text(
                         'Day',
                         style: TextStyle(color: Colors.white),
                       ),
@@ -141,14 +142,14 @@ class _Progress extends State<Progress> {
                         border: Border.all(
                             color: week ? selectedColor : unselectedColor,
                             width: 3),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       width: 80,
                       height: 40,
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(3),
-                      margin: EdgeInsets.only(right: 5),
-                      child: Text(
+                      padding: const EdgeInsets.all(3),
+                      margin: const EdgeInsets.only(right: 5),
+                      child: const Text(
                         'Week',
                         style: TextStyle(color: Colors.white),
                       ),
@@ -166,14 +167,14 @@ class _Progress extends State<Progress> {
                         border: Border.all(
                             color: month ? selectedColor : unselectedColor,
                             width: 3),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       width: 80,
                       height: 40,
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(3),
-                      margin: EdgeInsets.only(right: 5),
-                      child: Text(
+                      padding: const EdgeInsets.all(3),
+                      margin: const EdgeInsets.only(right: 5),
+                      child: const Text(
                         'Month',
                         style: TextStyle(color: Colors.white),
                       ),
@@ -191,14 +192,14 @@ class _Progress extends State<Progress> {
                         border: Border.all(
                             color: year ? selectedColor : unselectedColor,
                             width: 3),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       width: 80,
                       height: 40,
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(3),
-                      margin: EdgeInsets.only(right: 5),
-                      child: Text(
+                      padding: const EdgeInsets.all(3),
+                      margin: const EdgeInsets.only(right: 5),
+                      child: const Text(
                         'Year',
                         style: TextStyle(color: Colors.white, fontSize: 15),
                       ),
@@ -207,7 +208,7 @@ class _Progress extends State<Progress> {
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             // Circular Progress Chart
             Center(
               child: Stack(
@@ -225,33 +226,33 @@ class _Progress extends State<Progress> {
                   ),
                   Text(
                     '${(progress * 100).toInt()}%',
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
 
-            Text('Workouts done: ${(progress*100).toInt()}/100', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 20),
+            Text('Workouts done: ${(progress*100).toInt()}/100', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
             Text(
               'Great Job $userName',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('Successfully completed Day 4 of training',
+            const Text('Successfully completed Day 4 of training',
                 style: TextStyle(fontSize: 14)),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             // Weight Information (Three Boxes using GridView)
             Expanded(
               child: GridView.count(
                 crossAxisCount: 3,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 children: [
-                  buildWeightBox('Target Weight', targetWeight.toString() + ' kg',0),
-                  buildWeightBox('Start Weight', startWeight.toString() + ' kg',1),
-                  buildWeightBox('Actual Weight', actualWeight.toString() + ' kg',2),
+                  buildWeightBox('Target Weight', '$targetWeight kg',0),
+                  buildWeightBox('Start Weight', '$startWeight kg',1),
+                  buildWeightBox('Actual Weight', '$actualWeight kg',2),
                 ],
               ),
             ),
@@ -265,12 +266,12 @@ class _Progress extends State<Progress> {
 
   Widget buildWeightBox(String title, String value,int index) {
     List<Color> colors = [
-      Color(0xFF759EFF), // اللون الأول
-      Color(0xFFB1C8FF), // اللون الثاني
-      Color(0xFF004DFF), // اللون الثالث
+      const Color(0xFF759EFF), // اللون الأول
+      const Color(0xFFB1C8FF), // اللون الثاني
+      const Color(0xFF004DFF), // اللون الثالث
     ];
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: colors[index % colors.length], // لون المربعات
         borderRadius: BorderRadius.circular(10),
@@ -280,12 +281,12 @@ class _Progress extends State<Progress> {
         children: [
           Text(
             title,
-            style: TextStyle(color: Colors.white, fontSize: 14),
+            style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ],

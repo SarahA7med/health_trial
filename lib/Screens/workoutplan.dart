@@ -1,17 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'ExericiseLibrary.dart';
 
 class workoutplan extends StatelessWidget {
+  const workoutplan({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Colors for each block
     final List<Color> colors = [
-      Color(0xFFDBE4FF), // Light blue
-      Color(0xFF004DFF),
-      Color(0xFF759EFF), // Blue
-      Color(0xFFB1C8FF), // Light purple
+      const Color(0xFFDBE4FF), // Light blue
+      const Color(0xFF004DFF),
+      const Color(0xFF759EFF), // Blue
+      const Color(0xFFB1C8FF), // Light purple
       // Medium blue
     ];
 
@@ -23,7 +24,7 @@ class workoutplan extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('💪Workout Plan'),
+        title: const Text('💪Workout Plan'),
         automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -31,8 +32,8 @@ class workoutplan extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Text(
                 'Categories',
                 style: TextStyle(
@@ -41,14 +42,14 @@ class workoutplan extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, // 2 columns
                     crossAxisSpacing: 10.0,
                     mainAxisSpacing: 10.0,
@@ -62,7 +63,7 @@ class workoutplan extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ExerciseLibrary()),
+                                builder: (context) =>  ExerciseLibrary()),
                           );
                           print('${categoriesUpper[index]} tapped');
                         },

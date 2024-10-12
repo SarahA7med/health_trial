@@ -42,7 +42,7 @@ class OnBoardingScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => GetStartScreen()),
+                      MaterialPageRoute(builder: (context) => const GetStartScreen()),
                     );
                   },
                   color: Colors.white,

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'Home_State.dart';
 
 class WeightHight extends StatefulWidget {
+  const WeightHight({super.key});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -54,8 +56,8 @@ class _WeightHightState extends State<WeightHight> {
                             value: hightVal,
                             min: 40,
                             max: 250,
-                            activeColor: Color(0xFF004DFF),
-                            inactiveColor: Color(0xFFDBE4FF),
+                            activeColor: const Color(0xFF004DFF),
+                            inactiveColor: const Color(0xFFDBE4FF),
                             onChanged: (val) {
                               setState(() {
                                 hightVal = val;
@@ -63,7 +65,7 @@ class _WeightHightState extends State<WeightHight> {
                             }),
                         Text(
                           '${hightVal.toInt()} cm',
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+                          style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(
                           height: 100,
@@ -92,11 +94,11 @@ class _WeightHightState extends State<WeightHight> {
                                 });
                               },
                             )),
-                        SizedBox(height: 150),
+                        const SizedBox(height: 150),
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) =>HomePage()),
+                              MaterialPageRoute(builder: (context) =>const HomePage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(

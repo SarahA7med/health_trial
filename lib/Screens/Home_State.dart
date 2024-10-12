@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'HomeScreen.dart';
@@ -7,6 +6,8 @@ import 'ProgressScreen.dart';
 import 'workoutplan.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -14,15 +15,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 final _items=[
-  SalomonBottomBarItem(icon: const Icon(Icons.home), title:Text('Home')),
-  SalomonBottomBarItem(icon: const Icon(Icons.fitness_center), title:Text('Activity')),
-  SalomonBottomBarItem(icon: const Icon(Icons.show_chart), title:Text('Progress')),
-  SalomonBottomBarItem(icon: const Icon(Icons.person), title:Text('Profile'))
+  SalomonBottomBarItem(icon: const Icon(Icons.home), title:const Text('Home')),
+  SalomonBottomBarItem(icon: const Icon(Icons.fitness_center), title:const Text('Activity')),
+  SalomonBottomBarItem(icon: const Icon(Icons.show_chart), title:const Text('Progress')),
+  SalomonBottomBarItem(icon: const Icon(Icons.person), title:const Text('Profile'))
 ];
   final List<Widget> _screens = [
-    Homescreen(),
-    workoutplan(), // Ensure this class is named correctly
-    Progress(), // Ensure this class is named correctly
+    const Homescreen(),
+    const workoutplan(), // Ensure this class is named correctly
+    const Progress(), // Ensure this class is named correctly
     const ProfileWidget(email: 'sara@example.com', name: 'Sarah', photoUrl: 'assets/woman.png', totalWorkoutHours: 20, age: 22, height: 167, weight: 54, workoutGoalHours: 50,), // Ensure this class is named correctly
   ];
 

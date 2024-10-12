@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class ExerciseLibrary extends StatelessWidget {
   // Define a list of colors
   final List<Color> exerciseColors = [
-    Color(0xFF004DFF),
-    Color(0xFFDBE4FF), // Light blue
-    Color(0xFF759EFF), // Blue
-    Color(0xFFB1C8FF), // Light blue
+    const Color(0xFF004DFF),
+    const Color(0xFFDBE4FF), // Light blue
+    const Color(0xFF759EFF), // Blue
+    const Color(0xFFB1C8FF), // Light blue
   ];
 
   // Sample exercises (replace this with API call in your app)
@@ -21,11 +21,13 @@ class ExerciseLibrary extends StatelessWidget {
     {'title': 'Squats', 'duration': '30 min', 'calories': '40 kcal'},
   ];
 
+  ExerciseLibrary({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Exercise Library'),
+        title: const Text('Exercise Library'),
       ),
       body: Container(
         color: Colors.white,
@@ -34,7 +36,7 @@ class ExerciseLibrary extends StatelessWidget {
 
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: exercises.length,
                 itemBuilder: (context, index) {
                   // Get exercise details
@@ -66,7 +68,7 @@ class ExerciseLibrary extends StatelessWidget {
       width: double.infinity,
       child: Card(
         color: color,
-        margin: EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 8),
         child: Padding(
           padding: const EdgeInsets.all(16.0), // Adjusted padding
           child: Column(
@@ -82,7 +84,7 @@ class ExerciseLibrary extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8), // Space between title and subtitle
+              const SizedBox(height: 8), // Space between title and subtitle
 
               // Subtitle with duration and calories
               Text(
@@ -92,7 +94,7 @@ class ExerciseLibrary extends StatelessWidget {
                   fontSize: 16, // Adjusted font size
                 ),
               ),
-              SizedBox(height: 8), // Space between subtitle and button
+              const SizedBox(height: 8), // Space between subtitle and button
 
               // Button at the bottom right
               Align(
@@ -100,12 +102,12 @@ class ExerciseLibrary extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Button padding
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Button padding
                   ),
                   onPressed: () {
                     // Handle button press
                   },
-                  child: Text(
+                  child: const Text(
                     'Start Workout',
                     style: TextStyle(color: Colors.white),
                   ),

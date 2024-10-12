@@ -3,6 +3,8 @@ import 'package:health_trial/Screens/profile_picture.dart';
 
 
 class GenderSelection extends StatefulWidget {
+  const GenderSelection({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _GenderSelectionState();
@@ -89,7 +91,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               GestureDetector(
@@ -107,7 +109,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                   decoration: BoxDecoration(
                     border: Border.all(color: _borderColorWoman, width: 4.0),
                     borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                           spreadRadius: 5,
                           color: Colors.grey,
@@ -138,18 +140,18 @@ class _GenderSelectionState extends State<GenderSelection> {
               ),
             ],
           ),
-          Spacer(),
-          Text(
+          const Spacer(),
+          const Text(
             "To give you a customize",
             style: TextStyle(fontSize: 15,fontWeight: FontWeight.w300),
             textAlign: TextAlign.center,
           ),
-          Text(
+          const Text(
             "experience we need to know your gender",
             style: TextStyle(fontSize: 15,fontWeight: FontWeight.w300),
             textAlign: TextAlign.center,
           ),
-          Spacer(),
+          const Spacer(),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(

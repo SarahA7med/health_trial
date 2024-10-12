@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -110,7 +108,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                   AnimatedSmoothIndicator(
                     activeIndex: _currentIndex,
                     count: _imagePaths.length,
-                    effect: WormEffect(
+                    effect: const WormEffect(
                       activeDotColor: Colors.blueAccent,
                       dotColor: Colors.grey,
                       dotHeight: 10,
@@ -144,7 +142,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => WeightHight()));
+                          builder: (context) => const WeightHight()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff004DFF),
