@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "814970618977",
+    "firebase_url": "https://health-trial-3f587-default-rtdb.firebaseio.com",
+    "project_id": "health-trial-3f587",
+    "storage_bucket": "health-trial-3f587.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814970618977:android:8e6469d890fa6207875620",
+        "android_client_info": {
+          "package_name": "com.example.health_trail"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChPNeyqj7nXS2RLjtxNAW0pwO7R-QEWbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814970618977:android:46ae79b06c82808f875620",
+        "android_client_info": {
+          "package_name": "com.example.health_trial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChPNeyqj7nXS2RLjtxNAW0pwO7R-QEWbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
