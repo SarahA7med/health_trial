@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/profile_picture.dart';
 
+import '../UserData.dart';
 
 class GenderSelection extends StatefulWidget {
   const GenderSelection({super.key});
@@ -14,6 +15,7 @@ class GenderSelection extends StatefulWidget {
 class _GenderSelectionState extends State<GenderSelection> {
   Color _borderColorMan = Colors.transparent;
   Color _borderColorWoman = Colors.transparent;
+  UserData userData = UserData();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,8 @@ class _GenderSelectionState extends State<GenderSelection> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+              color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -47,6 +50,7 @@ class _GenderSelectionState extends State<GenderSelection> {
               GestureDetector(
                 onTap: () {
                   setState(() {
+                    userData.gender = "female";
                     _borderColorMan = _borderColorMan == Colors.transparent
                         ? Colors.pinkAccent
                         : Colors.transparent;
@@ -86,7 +90,6 @@ class _GenderSelectionState extends State<GenderSelection> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -97,6 +100,7 @@ class _GenderSelectionState extends State<GenderSelection> {
               GestureDetector(
                 onTap: () {
                   setState(() {
+                    userData.gender = "male";
                     _borderColorWoman = _borderColorWoman == Colors.transparent
                         ? Colors.blue
                         : Colors.transparent;
@@ -133,7 +137,6 @@ class _GenderSelectionState extends State<GenderSelection> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -143,12 +146,12 @@ class _GenderSelectionState extends State<GenderSelection> {
           const Spacer(),
           const Text(
             "To give you a customize",
-            style: TextStyle(fontSize: 15,fontWeight: FontWeight.w300),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
             textAlign: TextAlign.center,
           ),
           const Text(
             "experience we need to know your gender",
-            style: TextStyle(fontSize: 15,fontWeight: FontWeight.w300),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
             textAlign: TextAlign.center,
           ),
           const Spacer(),
