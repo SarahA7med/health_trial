@@ -1,6 +1,9 @@
 import 'package:animated_weight_picker/animated_weight_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../UserData.dart';
 import 'Home_State.dart';
 
 class WeightHight extends StatefulWidget {
@@ -14,14 +17,16 @@ class WeightHight extends StatefulWidget {
 }
 
 class _WeightHightState extends State<WeightHight> {
-  double hightVal = 95, weightval = 60;
+  double hightVal = 95,
+      weightval = 60;
+  UserData userData = UserData();
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-         backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined,
                 color: Colors.black),
@@ -29,7 +34,6 @@ class _WeightHightState extends State<WeightHight> {
               Navigator.pop(context);
             },
           ),
-
         ),
         body: SafeArea(
           child: Container(
@@ -47,7 +51,8 @@ class _WeightHightState extends State<WeightHight> {
                       children: [
                         const Text(
                           "Select Your Height",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
                           height: 30,
@@ -61,18 +66,21 @@ class _WeightHightState extends State<WeightHight> {
                             onChanged: (val) {
                               setState(() {
                                 hightVal = val;
+                                userData.height = hightVal;
                               });
                             }),
                         Text(
                           '${hightVal.toInt()} cm',
-                          style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+                          style: const TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(
                           height: 100,
                         ),
                         const Text(
                           "Select Your Weight",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
                           height: 30,
@@ -91,14 +99,17 @@ class _WeightHightState extends State<WeightHight> {
                               onChange: (newValue) {
                                 setState(() {
                                   weightval = double.parse(newValue);
+                                  userData.weight = weightval;
                                 });
                               },
                             )),
                         const SizedBox(height: 150),
                         ElevatedButton(
                           onPressed: () {
+                            _uploadUserData();
                             Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) =>const HomePage()),
+                              MaterialPageRoute(
+                                  builder: (context) => const HomePage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -121,5 +132,20 @@ class _WeightHightState extends State<WeightHight> {
             ),
           ),
         ));
+  }
+
+  Future<void> _uploadUserData() async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    users
+        .add({
+    'userName': userData.name,
+    'weight': userData.weight,
+    'height': userData.height,
+    'gender': userData.gender,
+    'age': userData.age,
+    'id':FirebaseAuth.instance.currentUser?.uid
+    })
+        .then((value) => print("user added"))
+        .catchError((e) => print("failed to add user:$e"));
   }
 }

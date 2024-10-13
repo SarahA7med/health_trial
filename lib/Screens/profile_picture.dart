@@ -4,6 +4,8 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:health_trial/Screens/weight_hight.dart';
 
+import '../UserData.dart';
+
 
 class ProfilePicture extends StatefulWidget {
   const ProfilePicture({super.key});
@@ -12,11 +14,18 @@ class ProfilePicture extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _ProfilePictureState();
   }
+
+  static String selectedImage(){
+    _ProfilePictureState pictureState=_ProfilePictureState();
+    return pictureState._imagePaths[pictureState._currentIndex];
+  }
 }
 
 class _ProfilePictureState extends State<ProfilePicture> {
   int _currentIndex = 0;
   int _currentAge = 18;
+  UserData userData = UserData();
+
   // List of image paths
   final List<String> _imagePaths = [
     'assets/man.png', // Replace with your image paths
@@ -24,6 +33,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
     'assets/girl.png',
     // Add more images as needed
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +140,12 @@ class _ProfilePictureState extends State<ProfilePicture> {
                         maxValue: 100,
                         itemHeight: 50,
                         axis: Axis.vertical,
-                        onChanged: (value) => setState(() => _currentAge = value),
-                        decoration: BoxDecoration(
+                        onChanged: (value) {
+                          setState(() {
+                            _currentAge = value; // Update local state
+                            userData.age = _currentAge; // Update UserData
+                          });
+                        },                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.blueAccent),
                         ),

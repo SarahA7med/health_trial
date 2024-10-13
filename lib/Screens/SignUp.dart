@@ -1,8 +1,8 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/HomeScreen.dart';
 import 'package:health_trial/Screens/gender_selection.dart';
+import 'package:health_trial/UserData.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -11,6 +11,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   bool isLogin = true;
+  UserData userData = UserData();
   TextEditingController nameController = TextEditingController();
   TextEditingController signupEmailController = TextEditingController();
   TextEditingController signupPasswordController = TextEditingController();
@@ -275,6 +276,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 if (value == null || value.trim().isEmpty) {
                   return 'this field is required';
                 } else {
+                  setState(() {
+                    userData.name = value;
+                  });
                   return null;
                 }
               },
