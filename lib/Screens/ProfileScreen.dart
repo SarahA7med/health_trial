@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfileWidget extends StatelessWidget {
-  final String name;
+class ProfileWidget extends StatefulWidget {
+
+  User? user =  FirebaseAuth.instance.currentUser;
+  final String name=;
   final String photoUrl;
   final int totalWorkoutHours;
   final int age;
@@ -10,21 +13,27 @@ class ProfileWidget extends StatelessWidget {
   final double weight; // Weight in kg
   final double workoutGoalHours; // Goal for workout hours
 
-  const ProfileWidget({
-    super.key,
-    required this.name,
-    required this.photoUrl,
-    required this.totalWorkoutHours,
-    required this.age,
-    required this.email,
-    required this.height,
-    required this.weight,
-    required this.workoutGoalHours,
-  });
+
+  //  ProfileWidget({
+  //   super.key,
+  //   required this.name,
+  //   required this.photoUrl,
+  //   required this.totalWorkoutHours,
+  //   required this.age,
+  //   required this.email,
+  //   required this.height,
+  //   required this.weight,
+  //   required this.workoutGoalHours,
+  // });
 
   @override
+  _ProfileWidgetState createState() => _ProfileWidgetState();
+}
+
+class _ProfileWidgetState extends State<ProfileWidget> {
+  @override
   Widget build(BuildContext context) {
-    double workoutProgress = totalWorkoutHours / workoutGoalHours;
+    double workoutProgress = widget.totalWorkoutHours / widget.workoutGoalHours;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -57,7 +66,7 @@ class ProfileWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  widget.name,
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -65,7 +74,7 @@ class ProfileWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  email,
+                  widget.email,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white70,
@@ -82,7 +91,7 @@ class ProfileWidget extends StatelessWidget {
               backgroundColor: Colors.white,
               child: CircleAvatar(
                 radius: 47,
-                backgroundImage: NetworkImage(photoUrl),
+                backgroundImage: NetworkImage(widget.photoUrl),
               ),
             ),
           ),
@@ -99,7 +108,7 @@ class ProfileWidget extends StatelessWidget {
         children: [
           _buildSectionTitle('Workout Progress'),
           const SizedBox(height: 10),
-          _buildProgressBar(context, workoutProgress, totalWorkoutHours, workoutGoalHours),
+          _buildProgressBar(context, workoutProgress, widget.totalWorkoutHours, widget.workoutGoalHours),
           const SizedBox(height: 20),
           _buildSectionTitle('Personal Information'),
           const SizedBox(height: 10),
@@ -161,10 +170,10 @@ class ProfileWidget extends StatelessWidget {
       mainAxisSpacing: 15,
       crossAxisSpacing: 15,
       children: [
-        _buildInfoItem(Icons.fitness_center, 'Workout Hours', '$totalWorkoutHours h'),
-        _buildInfoItem(Icons.cake, 'Age', '$age years'),
-        _buildInfoItem(Icons.height, 'Height', '${height.toStringAsFixed(1)} cm'),
-        _buildInfoItem(Icons.monitor_weight, 'Weight', '${weight.toStringAsFixed(1)} kg'),
+        _buildInfoItem(Icons.fitness_center, 'Workout Hours', '${widget.totalWorkoutHours} h'),
+        _buildInfoItem(Icons.cake, 'Age', '${widget.age} years'),
+        _buildInfoItem(Icons.height, 'Height', '${widget.height.toStringAsFixed(1)} cm'),
+        _buildInfoItem(Icons.monitor_weight, 'Weight', '${widget.weight.toStringAsFixed(1)} kg'),
       ],
     );
   }
@@ -220,7 +229,7 @@ class ProfileWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Keep pushing! You're ${totalWorkoutHours < workoutGoalHours ? 'almost' : 'over'} your goal.",
+            "Keep pushing! You're ${widget.totalWorkoutHours < widget.workoutGoalHours ? 'almost' : 'over'} your goal.",
             style: TextStyle(
               fontSize: 16,
               color: Colors.green[600],
@@ -228,7 +237,7 @@ class ProfileWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            "Next goal: ${workoutGoalHours + 10} hours",
+            "Next goal: ${widget.workoutGoalHours + 10} hours",
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
