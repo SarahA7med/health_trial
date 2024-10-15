@@ -21,7 +21,7 @@ final _items=[
   SalomonBottomBarItem(icon: const Icon(Icons.person), title:const Text('Profile'))
 ];
   final List<Widget> _screens = [
-    const Homescreen(),
+    Homescreen(),
     const workoutplan(), // Ensure this class is named correctly
     const Progress(), // Ensure this class is named correctly
     const ProfileWidget( ), // Ensure this class is named correctly
