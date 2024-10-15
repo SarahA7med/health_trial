@@ -173,11 +173,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       mainAxisSpacing: 15,
       crossAxisSpacing: 15,
       children: [
-        _buildInfoItem(Icons.cake, 'العمر', '${userData?['age'] ?? 0} years'),
-        _buildInfoItem(Icons.height, 'الطول',
+        _buildInfoItem(Icons.cake, 'Age', '${userData?['age'] ?? 0} years'),
+        _buildInfoItem(Icons.height, 'Height',
             '${(userData?['height'] ?? 0).toStringAsFixed(1)} cm'),
-        _buildInfoItem(Icons.monitor_weight, 'الوزن',
+        _buildInfoItem(Icons.monitor_weight, 'Weight',
             '${(userData?['weight'] ?? 0).toStringAsFixed(1)} kg'),
+        _buildInfoItem(Icons.person, 'Gender',
+            '${(userData?['gender'] ).toStringAsFixed(1)} '),
       ],
     );
   }

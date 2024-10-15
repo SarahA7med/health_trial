@@ -6,8 +6,9 @@ import 'package:health_trial/Screens/weight_hight.dart';
 
 class ProfilePicture extends StatefulWidget {
   final String gender;
-
-  const ProfilePicture({super.key, required this.gender});
+  final String name;
+  final String email;
+  const ProfilePicture({super.key, required this.name,required this.email,required this.gender});
 
   @override
   State<StatefulWidget> createState() {
@@ -138,6 +139,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => WeightHight(
+                            name: widget.name,
+                            email: widget.email,
                             gender: widget.gender,
                             profilePicture: _imagePaths[_currentIndex],
                             age: _currentAge,

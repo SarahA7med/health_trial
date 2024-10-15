@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/HomeScreen.dart';
@@ -12,6 +13,24 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+
+
+
+  Future<void> fetchUserData(String userId) async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+      if (userDoc.exists) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        print('User Data: $userData');
+      } else {
+        print('No user data found');
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
   bool isLogin = true;
   TextEditingController nameController = TextEditingController();
   TextEditingController signupEmailController = TextEditingController();
@@ -171,7 +190,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', user.user?.uid ?? '');
-
+    String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
     ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(
     backgroundColor: Colors.green,
@@ -373,7 +392,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
                     Future.delayed(const Duration(seconds: 3), () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => GenderSelection()));
+                          builder: (context) => GenderSelection(name: nameController.text, email: signupEmailController.text,)));
                     });
               } on FirebaseAuthException catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(

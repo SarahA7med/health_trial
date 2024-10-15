@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/profile_picture.dart';
 
 class GenderSelection extends StatefulWidget {
-  const GenderSelection({super.key});
+  final String name;
+  final String email;
+  const GenderSelection({super.key,required this.name,required this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -138,7 +140,7 @@ class _GenderSelectionState extends State<GenderSelection> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => ProfilePicture(gender: selectedGender),
+                  builder: (context) => ProfilePicture(name: widget.name,email:widget.email,gender: selectedGender),
                 ),
               );
             },

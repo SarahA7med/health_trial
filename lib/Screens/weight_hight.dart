@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'Home_State.dart';
 
 class WeightHight extends StatefulWidget {
+  final String name;
+  final String email;
   final String gender;
   final String profilePicture;
   final int age;
@@ -13,6 +15,8 @@ class WeightHight extends StatefulWidget {
     required this.gender,
     required this.profilePicture,
     required this.age,
+    required this.name,
+    required this.email
   });
 
   @override
@@ -24,6 +28,8 @@ class _WeightHightState extends State<WeightHight> {
   double weightval = 70;
 
   Future<void> uploadUserData({
+    required String name,
+    required String email,
     required String gender,
     required String profilePicture,
     required int age,
@@ -35,6 +41,8 @@ class _WeightHightState extends State<WeightHight> {
 
     try {
       await users.add({
+        'name':name,
+        'email':email,
         'gender': gender,
         'profilePicture': profilePicture,
         'age': age,
@@ -110,11 +118,11 @@ class _WeightHightState extends State<WeightHight> {
             const Spacer(),
             ElevatedButton(
               onPressed: () async {
-                // Get the current user token
                 String? token = await FirebaseAuth.instance.currentUser?.getIdToken(); // استخدام await هنا
-
                 if (token != null) {
                   await uploadUserData(
+                    name: widget.name,
+                    email: widget.email,
                     gender: widget.gender,
                     profilePicture: widget.profilePicture,
                     age: widget.age,
