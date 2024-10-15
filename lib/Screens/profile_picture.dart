@@ -1,12 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:numberpicker/numberpicker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:health_trial/Screens/weight_hight.dart';
 
-
 class ProfilePicture extends StatefulWidget {
-  const ProfilePicture({super.key});
+  final String gender;
+
+  const ProfilePicture({super.key, required this.gender});
 
   @override
   State<StatefulWidget> createState() {
@@ -17,12 +18,11 @@ class ProfilePicture extends StatefulWidget {
 class _ProfilePictureState extends State<ProfilePicture> {
   int _currentIndex = 0;
   int _currentAge = 18;
-  // List of image paths
+
   final List<String> _imagePaths = [
-    'assets/man.png', // Replace with your image paths
+    'assets/man.png',
     'assets/woman.png',
     'assets/girl.png',
-    // Add more images as needed
   ];
 
   @override
@@ -53,15 +53,13 @@ class _ProfilePictureState extends State<ProfilePicture> {
                     style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
-
-                  // Image Carousel
                   CarouselSlider.builder(
                     itemCount: _imagePaths.length,
                     itemBuilder: (context, index, realIndex) {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            _currentIndex = index; // Update the selected index
+                            _currentIndex = index;
                           });
                         },
                         child: Container(
@@ -87,7 +85,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                       height: 120,
                       initialPage: 0,
                       enableInfiniteScroll: false,
-                      viewportFraction: 0.3, // Adjust to change the size of visible images
+                      viewportFraction: 0.3,
                       onPageChanged: (index, reason) {
                         setState(() {
                           _currentIndex = index;
@@ -95,7 +93,6 @@ class _ProfilePictureState extends State<ProfilePicture> {
                       },
                     ),
                   ),
-
                   const SizedBox(height: 20),
                   const Text(
                     "Select your profile picture.",
@@ -103,8 +100,6 @@ class _ProfilePictureState extends State<ProfilePicture> {
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                   const SizedBox(height: 20),
-
-                  // Page Indicator
                   AnimatedSmoothIndicator(
                     activeIndex: _currentIndex,
                     count: _imagePaths.length,
@@ -116,7 +111,6 @@ class _ProfilePictureState extends State<ProfilePicture> {
                     ),
                   ),
                   const SizedBox(height: 50),
-                  // Age Selector
                   Column(
                     children: [
                       const Text(
@@ -141,8 +135,15 @@ class _ProfilePictureState extends State<ProfilePicture> {
                   const SizedBox(height: 100),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const WeightHight()));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => WeightHight(
+                            gender: widget.gender,
+                            profilePicture: _imagePaths[_currentIndex],
+                            age: _currentAge,
+                          ),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff004DFF),

@@ -2,7 +2,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/HomeScreen.dart';
+import 'package:health_trial/Screens/Home_State.dart';
 import 'package:health_trial/Screens/gender_selection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -160,34 +162,40 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  if (loginFormKey.currentState!.validate()) {
-                    try {
-                      UserCredential user = await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: loginEmailController.text,
-                              password: loginPasswordController.text);
+    if (loginFormKey.currentState!.validate()) {
+    try {
+    UserCredential user = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+    email: loginEmailController.text,
+    password: loginPasswordController.text);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          backgroundColor: Colors.green,
-                          content: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 15.0),
-                            child: Text(
-                              'Welcome to Health Trial',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                      Future.delayed(const Duration(seconds: 3), () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Homescreen()));
-                      });
-                    } on FirebaseAuthException catch (e) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', user.user?.uid ?? '');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+    backgroundColor: Colors.green,
+    content: Padding(
+    padding: EdgeInsets.symmetric(vertical: 15.0),
+    child: Text(
+    'Welcome to Health Trial',
+    style: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+    ),
+    ),
+    ),
+    ),
+    );
+
+
+    Future.delayed(const Duration(seconds: 3), () {
+    Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => HomePage()));
+    });
+    }
+     on FirebaseAuthException catch (e) {
                       String message;
                       if (e.code == 'user-not-found') {
                         message = 'No user found for that email.';
@@ -341,6 +349,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       email: signupEmailController.text,
                       password: signupPasswordController.text,
                     );
+
+                    // حفظ التوكن في SharedPreferences
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('token', userCredential.user?.uid ?? '');
+
+                    // عرض رسالة الترحيب
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         backgroundColor: Colors.green,
@@ -355,11 +369,13 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                     );
+
+
                     Future.delayed(const Duration(seconds: 3), () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => GenderSelection()));
                     });
-                  } on FirebaseAuthException catch (e) {
+              } on FirebaseAuthException catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: Colors.red,

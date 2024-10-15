@@ -1,37 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfileWidget extends StatelessWidget {
-  final String name;
-  final String photoUrl;
-  final int totalWorkoutHours;
-  final int age;
-  final String email;
-  final double height; // Height in cm
-  final double weight; // Weight in kg
-  final double workoutGoalHours; // Goal for workout hours
+class ProfileWidget extends StatefulWidget {
+  const ProfileWidget({super.key});
 
-  const ProfileWidget({
-    super.key,
-    required this.name,
-    required this.photoUrl,
-    required this.totalWorkoutHours,
-    required this.age,
-    required this.email,
-    required this.height,
-    required this.weight,
-    required this.workoutGoalHours,
-  });
+  @override
+  _ProfileWidgetState createState() => _ProfileWidgetState();
+}
+
+class _ProfileWidgetState extends State<ProfileWidget> {
+  FirestoreService firestoreService = FirestoreService();
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData(); // استدعاء الدالة عند بداية تشغيل الـ Widget
+  }
+
+  Future<void> _fetchUserData() async {
+    String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
+
+    if (token != null) {
+      var data = await firestoreService.getUserDataByToken(token);
+      setState(() {
+        userData = data;
+      });
+    } else {
+      print('User is not logged in. Cannot retrieve token.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    double workoutProgress = totalWorkoutHours / workoutGoalHours;
-
     return Scaffold(
-      body: SingleChildScrollView(
+      body: userData == null
+          ? const Center(
+          child: CircularProgressIndicator()) // إذا كانت البيانات غير موجودة، نعرض مؤشر تحميل
+          : SingleChildScrollView(
         child: Column(
           children: [
             _buildHeader(),
-            _buildBody(context, workoutProgress),
+            _buildBody(context),
           ],
         ),
       ),
@@ -57,7 +69,7 @@ class ProfileWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  userData?['name'] ?? 'N/A',
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -65,7 +77,7 @@ class ProfileWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  email,
+                  userData?['email'] ?? 'N/A',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white70,
@@ -82,7 +94,12 @@ class ProfileWidget extends StatelessWidget {
               backgroundColor: Colors.white,
               child: CircleAvatar(
                 radius: 47,
-                backgroundImage: NetworkImage(photoUrl),
+                backgroundImage: AssetImage(
+                  userData != null && userData?['profilePicture'] != null
+                      ? 'assets/${userData?['profilePicture']}'
+                      : 'assets/woman.png', // استخدام صورة افتراضية في حال عدم وجود صورة للمستخدم
+                ),
+
               ),
             ),
           ),
@@ -91,23 +108,17 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, double workoutProgress) {
+  Widget _buildBody(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Workout Progress'),
-          const SizedBox(height: 10),
-          _buildProgressBar(context, workoutProgress, totalWorkoutHours, workoutGoalHours),
-          const SizedBox(height: 20),
-          _buildSectionTitle('Personal Information'),
+
+          _buildSectionTitle('user data'),
           const SizedBox(height: 10),
           _buildInfoGrid(),
-          const SizedBox(height: 20),
-          _buildSectionTitle('Fitness Goals'),
-          const SizedBox(height: 10),
-          _buildGoalsSection(),
         ],
       ),
     );
@@ -124,7 +135,8 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(BuildContext context, double progress, int current, double goal) {
+  Widget _buildProgressBar(BuildContext context, double progress, int current,
+      double goal) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -161,10 +173,11 @@ class ProfileWidget extends StatelessWidget {
       mainAxisSpacing: 15,
       crossAxisSpacing: 15,
       children: [
-        _buildInfoItem(Icons.fitness_center, 'Workout Hours', '$totalWorkoutHours h'),
-        _buildInfoItem(Icons.cake, 'Age', '$age years'),
-        _buildInfoItem(Icons.height, 'Height', '${height.toStringAsFixed(1)} cm'),
-        _buildInfoItem(Icons.monitor_weight, 'Weight', '${weight.toStringAsFixed(1)} kg'),
+        _buildInfoItem(Icons.cake, 'العمر', '${userData?['age'] ?? 0} years'),
+        _buildInfoItem(Icons.height, 'الطول',
+            '${(userData?['height'] ?? 0).toStringAsFixed(1)} cm'),
+        _buildInfoItem(Icons.monitor_weight, 'الوزن',
+            '${(userData?['weight'] ?? 0).toStringAsFixed(1)} kg'),
       ],
     );
   }
@@ -172,6 +185,7 @@ class ProfileWidget extends StatelessWidget {
   Widget _buildInfoItem(IconData icon, String label, String value) {
     return Container(
       padding: const EdgeInsets.all(10),
+      height: 100, // تحديد ارتفاع العنصر
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -187,7 +201,7 @@ class ProfileWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.blue),
+          Icon(icon, color: Colors.blue, size: 30), // تعديل حجم الأيقونة
           const SizedBox(height: 5),
           Text(
             label,
@@ -202,41 +216,5 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildGoalsSection() {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.green[50],
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.green.withOpacity(0.2),
-            blurRadius: 10,
-            spreadRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Keep pushing! You're ${totalWorkoutHours < workoutGoalHours ? 'almost' : 'over'} your goal.",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.green[600],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "Next goal: ${workoutGoalHours + 10} hours",
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.green,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 }

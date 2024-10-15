@@ -1,27 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:health_trial/exercise.dart'; // تأكد من استيراد النموذج
 
-class ExerciseLibrary extends StatelessWidget {
-  // Define a list of colors
-  final List<Color> exerciseColors = [
-    const Color(0xFF004DFF),
-    const Color(0xFFDBE4FF), // Light blue
-    const Color(0xFF759EFF), // Blue
-    const Color(0xFFB1C8FF), // Light blue
-  ];
+class ExerciseLibrary extends StatefulWidget {
+  final String selectedCategory;
 
-  // Sample exercises (replace this with API call in your app)
-  final List<Map<String, String>> exercises = [
-    {'title': 'Bicep Curls', 'duration': '25 min', 'calories': '30 kcal'},
-    {
-      'title': 'Shoulder Press',
-      'duration': '10-15 min',
-      'calories': '20-30 kcal'
-    },
-    {'title': 'Push-ups', 'duration': '25 min', 'calories': '25 kcal'},
-    {'title': 'Squats', 'duration': '30 min', 'calories': '40 kcal'},
-  ];
+  ExerciseLibrary({super.key, required this.selectedCategory});
 
-  ExerciseLibrary({super.key});
+  @override
+  _ExerciseLibraryState createState() => _ExerciseLibraryState();
+}
+
+class _ExerciseLibraryState extends State<ExerciseLibrary> {
+  List<Exercise> exercises = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchExercises();
+  }
+
+  Future<void> fetchExercises() async {
+    final response = await http.get(
+      Uri.parse('https://exercisedb.p.rapidapi.com/exercises'),
+      headers: {
+        'X-RapidAPI-Key': '25862de7b4msh50339ae9b12035fp170d6ajsn33161befa41a', // استبدل بمفتاح API الخاص بك
+        'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      setState(() {
+        exercises = jsonResponse.map((exercise) {
+          return Exercise.fromJson({
+            'name': exercise['name'],
+            'duration': getDurationForExercise(exercise['name']),
+            'calories': calculateCalories(exercise['name']),
+          });
+        }).toList();
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load exercises');
+    }
+  }
+
+  String getDurationForExercise(String exerciseName) {
+    // استخدم معلومات دقيقة عن المدة هنا
+    if (exerciseName == '3/4 sit-up') {
+      return '30 seconds';
+    } else if (exerciseName == '45° side bend') {
+      return '45 seconds';
+    }
+    return 'N/A';
+  }
+
+  String calculateCalories(String exerciseName) {
+    // استخدم معلومات دقيقة عن السعرات الحرارية هنا
+    if (exerciseName == '3/4 sit-up') {
+      return '15 calories';
+    } else if (exerciseName == '45° side bend') {
+      return '20 calories';
+    }
+    return 'N/A';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,81 +76,74 @@ class ExerciseLibrary extends StatelessWidget {
       ),
       body: Container(
         color: Colors.white,
-        child: Column(
-          children: [
-
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: exercises.length,
-                itemBuilder: (context, index) {
-                  // Get exercise details
-                  final exercise = exercises[index];
-                  // Get color based on index
-                  final color = exerciseColors[index % exerciseColors.length];
-
-                  final textColor = (index % 2 == 0) ? Colors.white : Colors
-                      .black;
-
-                  return exerciseCard(
-                    exercise['title']!,
-                    exercise['duration']!,
-                    exercise['calories']!,
-                    color,
-                    textColor,
-                  );
-                },
-              ),
-            ),
-          ],
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : exercises.isEmpty
+            ? Center(child: Text('No exercises found.'))
+            : ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: exercises.length,
+          itemBuilder: (context, index) {
+            final exercise = exercises[index];
+            return exerciseCard(exercise);
+          },
         ),
       ),
     );
   }
 
-  Widget exerciseCard(String title, String duration, String calories, Color color, Color textColor) {
+  Widget exerciseCard(Exercise exercise) {
     return SizedBox(
       width: double.infinity,
       child: Card(
-        color: color,
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Adjusted padding
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // This will allow the card to shrink if needed
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Title
               Text(
-                title,
+                exercise.title,
                 style: TextStyle(
-                  color: textColor,
-                  fontSize: 20, // Adjusted font size to fit within space
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8), // Space between title and subtitle
-
-              // Subtitle with duration and calories
+              const SizedBox(height: 8),
               Text(
-                '$duration • $calories',
+                '${exercise.duration} • ${exercise.calories}',
                 style: TextStyle(
-                  color: textColor.withOpacity(0.7),
-                  fontSize: 16, // Adjusted font size
+                  color: Colors.black.withOpacity(0.7),
+                  fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 8), // Space between subtitle and button
-
-              // Button at the bottom right
+              const SizedBox(height: 8),
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Button padding
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   ),
                   onPressed: () {
-                    // Handle button press
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Starting Workout'),
+                          content: Text('You are starting: ${exercise.title}'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   child: const Text(
                     'Start Workout',
