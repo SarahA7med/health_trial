@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/profile_picture.dart';
 
-import '../UserData.dart';
-
 class GenderSelection extends StatefulWidget {
-  const GenderSelection({super.key});
+  final String name;
+  final String email;
+  const GenderSelection({super.key,required this.name,required this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -13,9 +13,10 @@ class GenderSelection extends StatefulWidget {
 }
 
 class _GenderSelectionState extends State<GenderSelection> {
+  String selectedGender = '';
+
   Color _borderColorMan = Colors.transparent;
   Color _borderColorWoman = Colors.transparent;
-  UserData userData = UserData();
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,7 @@ class _GenderSelectionState extends State<GenderSelection> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined,
-              color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -50,10 +50,8 @@ class _GenderSelectionState extends State<GenderSelection> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    userData.gender = "female";
-                    _borderColorMan = _borderColorMan == Colors.transparent
-                        ? Colors.pinkAccent
-                        : Colors.transparent;
+                    selectedGender = 'Female';
+                    _borderColorMan = Colors.pinkAccent;
                     _borderColorWoman = Colors.transparent;
                   });
                 },
@@ -74,7 +72,6 @@ class _GenderSelectionState extends State<GenderSelection> {
                       ]),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
                     children: [
                       Image.asset(
                         "assets/woman.png",
@@ -82,7 +79,6 @@ class _GenderSelectionState extends State<GenderSelection> {
                         width: 155,
                         height: 200,
                       ),
-                      //),
                       const Text(
                         "Female",
                         style: TextStyle(
@@ -94,16 +90,12 @@ class _GenderSelectionState extends State<GenderSelection> {
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 20,
-              ),
+              const SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    userData.gender = "male";
-                    _borderColorWoman = _borderColorWoman == Colors.transparent
-                        ? Colors.blue
-                        : Colors.transparent;
+                    selectedGender = 'Male';
+                    _borderColorWoman = Colors.blue;
                     _borderColorMan = Colors.transparent;
                   });
                 },
@@ -144,21 +136,13 @@ class _GenderSelectionState extends State<GenderSelection> {
             ],
           ),
           const Spacer(),
-          const Text(
-            "To give you a customize",
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-            textAlign: TextAlign.center,
-          ),
-          const Text(
-            "experience we need to know your gender",
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-            textAlign: TextAlign.center,
-          ),
-          const Spacer(),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const ProfilePicture()));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ProfilePicture(name: widget.name,email:widget.email,gender: selectedGender),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xff004DFF),
@@ -172,7 +156,6 @@ class _GenderSelectionState extends State<GenderSelection> {
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
           ),
-          const SizedBox(height: 20),
         ]),
       ),
     );

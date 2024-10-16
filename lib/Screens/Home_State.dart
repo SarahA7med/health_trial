@@ -22,9 +22,9 @@ final _items=[
 ];
   final List<Widget> _screens = [
     const Homescreen(),
-    const workoutplan(), // Ensure this class is named correctly
+    const WorkoutPlan(), // Ensure this class is named correctly
     const Progress(), // Ensure this class is named correctly
-    const ProfileWidget(email: 'sara@example.com', name: 'Sarah', photoUrl: 'assets/woman.png', totalWorkoutHours: 20, age: 22, height: 167, weight: 54, workoutGoalHours: 50,), // Ensure this class is named correctly
+    const ProfileWidget( ), // Ensure this class is named correctly
   ];
 
   void _onItemTapped(int index) {

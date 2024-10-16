@@ -1,25 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'WaterTrackerPage.dart';
+import 'walking_tracker_page.dart'; // Import the WalkingTrackerPage
 
-import 'ExericiseLibrary.dart';
-
-class workoutplan extends StatelessWidget {
-  const workoutplan({super.key});
+class WorkoutPlan extends StatelessWidget {
+  const WorkoutPlan({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Colors for each block
     final List<Color> colors = [
       const Color(0xFFDBE4FF), // Light blue
-      const Color(0xFF004DFF),
+      const Color(0xFF004DFF), // Blue
       const Color(0xFF759EFF), // Blue
       const Color(0xFFB1C8FF), // Light purple
-      // Medium blue
     ];
 
-    // Categories text
-    final List<String> categoriesUpper = ['FULL', 'UPPER', 'CORE', 'LOWER'];
-
-    final List<String> categoriesLower = ['Body', 'Body', 'Body', 'Body'];
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    final List<String> categories = ['Track Walking', 'Running', 'Cardio', 'Water'];
 
     return Scaffold(
       appBar: AppBar(
@@ -42,62 +39,61 @@ class workoutplan extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // 2 columns
+                    crossAxisCount: 2,
                     crossAxisSpacing: 10.0,
                     mainAxisSpacing: 10.0,
-                    childAspectRatio:
-                        0.7, // Decreased aspect ratio for bigger blocks
+                    childAspectRatio: 0.7,
                   ),
-                  itemCount: categoriesUpper.length,
+                  itemCount: categories.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                        onTap: () {
+                      onTap: () {
+                        if (categories[index] == 'Track Walking') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  ExerciseLibrary()),
-                          );
-                          print('${categoriesUpper[index]} tapped');
-                        },
-                        child: Container(
-                            decoration: BoxDecoration(
-                              color: colors[index], // Assign each block a color
-                              borderRadius: BorderRadius.circular(
-                                  15.0), // Rounded corners
+                              builder: (context) =>
+                                  WalkingTrackerPage(userId: uid), // Navigate to walking tracker page
                             ),
-                            child: Center(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                  Text(
-                                    categoriesUpper[index],
-                                    style: TextStyle(
-                                      color: (index == 0 || index == 3)
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                  Text(
-                                    categoriesLower[index],
-                                    style: TextStyle(
-                                      color: (index == 0 || index == 3)
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 28.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                ]))));
+                          );
+                        } else if (categories[index] == 'Water') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  WaterTrackerPage(userId: uid), // Navigate to water tracker page
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: colors[index],
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                categories[index],
+                                style: TextStyle(
+                                  color: (index == 0 || index == 3) ? Colors.black : Colors.white,
+                                  fontSize: 26.0,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
