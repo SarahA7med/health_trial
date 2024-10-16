@@ -21,15 +21,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Future<void> _fetchUserData() async {
-    String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
-
-    if (token != null) {
-      var data = await firestoreService.getUserDataByToken(token);
+    String? uid = FirebaseAuth.instance.currentUser?.uid; // الحصول على uid
+    if (uid != null) {
+      var data = await firestoreService.getUserDataByUid(uid); // جلب البيانات باستخدام uid
       setState(() {
         userData = data;
       });
     } else {
-      print('User is not logged in. Cannot retrieve token.');
+      print('User is not logged in. Cannot retrieve uid.');
     }
   }
 
@@ -38,7 +37,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return Scaffold(
       body: userData == null
           ? const Center(
-          child: CircularProgressIndicator()) // إذا كانت البيانات غير موجودة، نعرض مؤشر تحميل
+        child: CircularProgressIndicator(), // إذا كانت البيانات غير موجودة، نعرض مؤشر تحميل
+      )
           : SingleChildScrollView(
         child: Column(
           children: [
@@ -99,7 +99,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       ? 'assets/${userData?['profilePicture']}'
                       : 'assets/woman.png', // استخدام صورة افتراضية في حال عدم وجود صورة للمستخدم
                 ),
-
               ),
             ),
           ),
@@ -109,14 +108,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Widget _buildBody(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          _buildSectionTitle('user data'),
+          _buildSectionTitle('User Data'),
           const SizedBox(height: 10),
           _buildInfoGrid(),
         ],
@@ -135,35 +132,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     );
   }
 
-  Widget _buildProgressBar(BuildContext context, double progress, int current,
-      double goal) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: LinearProgressIndicator(
-            value: progress,
-            minHeight: 15,
-            backgroundColor: Colors.grey[300],
-            valueColor: AlwaysStoppedAnimation<Color>(
-              progress >= 1 ? Colors.green : Colors.blue,
-            ),
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          "$current / ${goal.toStringAsFixed(0)} hours",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: progress >= 1 ? Colors.green : Colors.blue,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildInfoGrid() {
     return GridView.count(
       crossAxisCount: 2,
@@ -179,7 +147,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         _buildInfoItem(Icons.monitor_weight, 'Weight',
             '${(userData?['weight'] ?? 0).toStringAsFixed(1)} kg'),
         _buildInfoItem(Icons.person, 'Gender',
-            '${(userData?['gender'] ).toStringAsFixed(1)} '),
+            '${userData?['gender'] ?? 'N/A'}'), // عرض النص مباشرةً بدون toStringAsFixed
       ],
     );
   }
@@ -217,6 +185,4 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       ),
     );
   }
-
-
 }

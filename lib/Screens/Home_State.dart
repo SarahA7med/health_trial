@@ -22,7 +22,7 @@ final _items=[
 ];
   final List<Widget> _screens = [
     const Homescreen(),
-    const workoutplan(), // Ensure this class is named correctly
+    const WorkoutPlan(), // Ensure this class is named correctly
     const Progress(), // Ensure this class is named correctly
     const ProfileWidget( ), // Ensure this class is named correctly
   ];

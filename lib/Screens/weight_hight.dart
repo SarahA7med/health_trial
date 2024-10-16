@@ -16,7 +16,7 @@ class WeightHight extends StatefulWidget {
     required this.profilePicture,
     required this.age,
     required this.name,
-    required this.email
+    required this.email,
   });
 
   @override
@@ -28,6 +28,7 @@ class _WeightHightState extends State<WeightHight> {
   double weightval = 70;
 
   Future<void> uploadUserData({
+    required String uid, // استخدام uid بدلاً من التوكن
     required String name,
     required String email,
     required String gender,
@@ -35,20 +36,20 @@ class _WeightHightState extends State<WeightHight> {
     required int age,
     required double height,
     required double weight,
-    required String token, // New token parameter
   }) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     try {
-      await users.add({
-        'name':name,
-        'email':email,
+      // استخدام uid كمُعرّف للمستند
+      await users.doc(uid).set({
+        'name': name,
+        'email': email,
         'gender': gender,
         'profilePicture': profilePicture,
         'age': age,
         'height': height,
         'weight': weight,
-        'token': token, // Include token in the uploaded data
+        'uid': uid, // تخزين uid للمستخدم
       });
       print('Data uploaded successfully');
     } catch (e) {
@@ -118,9 +119,11 @@ class _WeightHightState extends State<WeightHight> {
             const Spacer(),
             ElevatedButton(
               onPressed: () async {
-                String? token = await FirebaseAuth.instance.currentUser?.getIdToken(); // استخدام await هنا
-                if (token != null) {
+                // الحصول على uid للمستخدم الحالي
+                String? uid = FirebaseAuth.instance.currentUser?.uid;
+                if (uid != null) {
                   await uploadUserData(
+                    uid: uid, // تمرير uid بدلاً من التوكن
                     name: widget.name,
                     email: widget.email,
                     gender: widget.gender,
@@ -128,14 +131,13 @@ class _WeightHightState extends State<WeightHight> {
                     age: widget.age,
                     height: hightVal,
                     weight: weightval,
-                    token: token, // Pass the token
                   );
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const HomePage()),
                   );
                 } else {
-                  // Handle case where the token is null (e.g., user not logged in)
-                  print('User is not logged in. Cannot retrieve token.');
+                  // معالجة الحالة التي يكون فيها uid null (مثلاً إذا لم يكن المستخدم مسجلاً الدخول)
+                  print('User is not logged in. Cannot retrieve uid.');
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -150,7 +152,6 @@ class _WeightHightState extends State<WeightHight> {
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
-
           ],
         ),
       ),

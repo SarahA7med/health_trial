@@ -1,20 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Method to get user data by token
-  Future<Map<String, dynamic>?> getUserDataByToken(String token) async {
+  // دالة لجلب بيانات المستخدم باستخدام uid
+  Future<Map<String, dynamic>?> getUserDataByUid(String uid) async {
     try {
-      // Query the users collection for a document where the token matches
-      var querySnapshot = await _db.collection('users').where('token', isEqualTo: token).get();
+      // الوصول إلى مجموعة 'users' في Firestore
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        return querySnapshot.docs.first.data();
+      if (userDoc.exists) {
+        // تحويل البيانات إلى Map إذا كانت الوثيقة موجودة
+        return userDoc.data() as Map<String, dynamic>;
+      } else {
+        print('User data not found for UID: $uid');
+        return null;
       }
     } catch (e) {
-      print('Error fetching user data by token: $e');
+      print('Error fetching user data: $e');
+      return null;
     }
-    return null;
   }
 }

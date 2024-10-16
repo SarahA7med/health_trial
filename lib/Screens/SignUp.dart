@@ -189,8 +189,11 @@ class _AuthScreenState extends State<AuthScreen> {
     password: loginPasswordController.text);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     await prefs.setString('token', user.user?.uid ?? '');
     String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    print(token);
+    print(user.user?.uid ?? '');
     ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(
     backgroundColor: Colors.green,
