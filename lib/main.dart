@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:health_trial/Screens/on_boarding_screen.dart';
-
+import 'package:flutter/material.dart';
+import 'package:health_trial/ViewModels/goals_viewmodel.dart';
+import 'package:health_trial/ViewModels/progress_viewmodel.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -9,8 +12,17 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) =>UserViewModel()..fetchUserGoals()),
+      //  ChangeNotifierProvider(create: (_) => ProgressViewModel()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -24,4 +36,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

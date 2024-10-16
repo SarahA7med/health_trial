@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_trial/ViewModels/progress_viewmodel.dart';
 
 class Progress extends StatefulWidget {
   const Progress({super.key});
@@ -10,6 +11,7 @@ class Progress extends StatefulWidget {
 }
 
 class _Progress extends State<Progress> {
+  ProgressViewModel progressViewModel=ProgressViewModel();
   String userName="user";
   double progress = 0;
   Color selectedColor = const Color(0xFF004DFF);
@@ -55,7 +57,7 @@ class _Progress extends State<Progress> {
 
   void updateWeights() {
     // تحديث قيم الوزن بناءً على الاختيار
-    if (interval == 'Day') {
+   /* if (interval == 'Day') {
       targetWeight = 70;
       startWeight = 75;
       actualWeight = 72;
@@ -77,7 +79,7 @@ class _Progress extends State<Progress> {
       progress = 0.5; // قيمة التقدم للسنة
     } else {
       progress = 0;
-    }
+    }*/
     setState(() {}); // إعادة بناء الصفحة لعرض القيم الجديدة
   }
 
@@ -92,7 +94,7 @@ class _Progress extends State<Progress> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title:const Text("✍️Track you progress"),
+          title:const Text("✍Track you progress"),
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
           ],
@@ -107,7 +109,8 @@ class _Progress extends State<Progress> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      setState(() {
+                      setState(() async{
+                        progress= await progressViewModel.calculateDailyProgress() as double;
                         upDataState("Day");
                       });
                     },
@@ -132,7 +135,8 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
+                      setState(() async {
+                        progress= await progressViewModel.calculateWeeklyProgress() as double;
                         upDataState("Week");
                       });
                     },
@@ -157,7 +161,8 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
+                      setState(() async {
+                       progress= await ProgressViewModel().calculateManthlyProgress() as double;
                         upDataState('Month');
                       });
                     },
@@ -182,7 +187,8 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
+                      setState(() async {
+                        progress= await progressViewModel.calculateYearlyProgress() as double;
                         upDataState('Year');
                       });
                     },
@@ -235,15 +241,15 @@ class _Progress extends State<Progress> {
 
             Text('Workouts done: ${(progress*100).toInt()}/100', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            Text(
-              'Great Job $userName',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const Text('Successfully completed Day 4 of training',
-                style: TextStyle(fontSize: 14)),
+            //Text(
+              //'Great Job $userName',
+              //style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+           // ),
+          //  const Text('Successfully completed Day 4 of training',
+              //  style: TextStyle(fontSize: 14)),
             const SizedBox(height: 50),
             // Weight Information (Three Boxes using GridView)
-            Expanded(
+           /* Expanded(
               child: GridView.count(
                 crossAxisCount: 3,
                 crossAxisSpacing: 10,
@@ -255,7 +261,7 @@ class _Progress extends State<Progress> {
                   buildWeightBox('Actual Weight', '$actualWeight kg',2),
                 ],
               ),
-            ),
+            ),*/
           ],
         ),
       ),
