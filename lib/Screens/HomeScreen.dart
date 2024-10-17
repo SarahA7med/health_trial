@@ -1,265 +1,197 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../ViewModels/goals_viewmodel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Homescreen extends StatelessWidget {
-  const Homescreen({super.key});
+  final TextEditingController waterController = TextEditingController();
+  final TextEditingController caloriesController = TextEditingController();
+  final TextEditingController exerciseDurationController = TextEditingController();
+  // final FirebaseFirestore fir = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white, // Background color
+    return ChangeNotifierProvider(
+      create: (context) => UserViewModel()..fetchUserData(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Fitness Tracker',style:TextStyle(color: Colors.white),),
+          backgroundColor: Color(0xFF004DFF),
+        ),
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          // Enables scrolling if content overflows
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
                 // Greeting Section
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                Consumer<UserViewModel>(
+                  builder: (context, viewModel, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image(
-                              image: AssetImage("assets/waving-hand.png"),
-                              height: 50,
-                              width: 50,
-                            ),
-                            Text(
-                              "Hello, Max",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Let's have a productive workout today!",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Profile/Settings Icon
-                    Icon(Icons.add_alert_sharp, size: 30, color: Colors.grey),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // Today's Workout Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF004dff),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        "Advanced",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff759eff),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        "5 training days",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // Daily Challenge Section
-                Card(
-                  color: const Color(0xFF004dff), // Blue background
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Daily Challenge",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Montserrat',
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        Text(
-                          "Full Body Strength",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Text(
-                                  "Time: 45 minutes",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white70,
-                                  ),
+                                Image(
+                                  image: AssetImage("assets/waving-hand.png"),
+                                  height: 50,
+                                  width: 50,
                                 ),
                                 Text(
-                                  "SQUATS, PUSH-UPS",
+                                  "Hello  ${viewModel.userName ?? ' '}",
                                   style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white70,
+                                    fontSize: 24,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-                              ),
-                              child: const Text(
-                                "Start",
-                                style: TextStyle(color: Colors.white),
+                            SizedBox(height: 8),
+                            Text(
+                              "Set Your Goals",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
                               ),
                             ),
                           ],
                         ),
+                        Icon(Icons.add_alert_sharp, size: 30, color: Colors.grey),
                       ],
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
 
-                // Daily Progress Section
-                Card(
-                  color: const Color(0xff759eff),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
+                // show goals
+                Consumer<UserViewModel>(
+                  builder: (context, viewModel, child) {
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Daily Progress",
+                        Text(
+                          "Your Goals:",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: const LinearProgressIndicator(
-                            value: 0.6,
-                            // Set your daily progress here (60% in this case)
-                            backgroundColor: Color(0xff759eff),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF004dff)),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          "60% completed today",
-                          style: TextStyle(fontSize: 16),
-                        ),
+                        SizedBox(height: 10),
+                        Text("Water Goal: ${viewModel.waterGoal ?? 'Not Set'} liters"),
+                        Text("Calories Goal: ${viewModel.caloriesGoal ?? 'Not Set'} calories"),
+                        Text("Exercise Duration Goal: ${viewModel.exerciseDurationGoal ?? 'Not Set'} minutes"),
+                        SizedBox(height: 20),
                       ],
-                    ),
+                    );
+                  },
+                ),
+
+                // Water Intake Field
+                TextFormField(
+                  controller: waterController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: "Water Intake (in liters)",
+                    hintText: "Enter amount of water (liter)",
+                    suffixIcon: Icon(Icons.local_drink),
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // Recommended Tasks Section (Similar Cards)
-                Card(
-                  color: const Color(0xffDBe4ff),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+                // Calories Intake Field
+                TextFormField(
+                  controller: caloriesController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Calories Intake",
+                    hintText: "Enter calories (e.g. 2000)",
+                    suffixIcon: Icon(Icons.fastfood),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Cardio Blast",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Text(
-                              "Time: 45 minutes",
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              "SQUATS, PUSH-UPS",
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                          ),
-                          child: const Text(
-                            "Start",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
+                ),
+                const SizedBox(height: 20),
+
+                // Exercise Duration Field
+                TextFormField(
+                  controller: exerciseDurationController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Exercise Duration (in minutes)",
+                    hintText: "Enter duration (e.g. 30)",
+                    suffixIcon: Icon(Icons.fitness_center),
                   ),
+                ),
+                const SizedBox(height: 20),
+
+                // save goals button
+                ElevatedButton(
+                  onPressed: () async {
+
+                    String waterInput = waterController.text;
+                    String caloriesInput = caloriesController.text;
+                    String durationInput = exerciseDurationController.text;
+
+                    // validation water positive and from 1 to 7 liter
+                    double? waterGoal = double.tryParse(waterInput);
+                    if (waterGoal == null || waterGoal < 1.0 || waterGoal > 7.0||waterGoal<0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Invalid water input. Must be between 1 and 7 liters."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      print("Invalid water input. Must be between 1 and 7 liters .");
+                      return;
+                    }
+
+                    // validation calories positive and not null
+                    int? caloriesGoal = int.tryParse(caloriesInput);
+                    if (caloriesGoal == null || caloriesGoal <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Invalid colories input. Must be  positive and not null ."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      print("Invalid calories input. Must be a positive number.");
+                      return;
+                    }
+
+                    // التحقق من مدة التمرين (بين 10 و120 دقيقة)
+                    int? exerciseDurationGoal = int.tryParse(durationInput);
+                    if (exerciseDurationGoal == null || exerciseDurationGoal < 10 || exerciseDurationGoal > 120) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Invalid water input. Must be between 10 and 120 minutes."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      print("Invalid exercise duration. Must be between 10 and 120 minutes.");
+                      return;
+                    }
+
+                    // invoke savegoals method
+                    await Provider.of<UserViewModel>(context, listen: false)
+                        .saveUserGoals(waterGoal, caloriesGoal, exerciseDurationGoal,context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF004DFF),
+                  ),
+                  child: Text('Save Goals', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
