@@ -17,13 +17,22 @@ class Repository {
     }
     return null;
   }
-
-  // upload goals dependency userid
-  Future<void> saveUserGoals(String userId, GoalsModel goals) async {
+  Future<void> saveUserGoals(String userId, double waterGoal, int caloriesGoal, int exerciseDurationGoal) async {
     try {
+      String todayDate = DateTime.now().toIso8601String().split('T')[0]; //only date without time
+      GoalsModel goals = GoalsModel(
+        waterGoal: waterGoal,
+        caloriesGoal: caloriesGoal,
+        exerciseDurationGoal: exerciseDurationGoal,
+        date: todayDate,
+      );
+
+
       await _firestore
           .collection('goals')
           .doc(userId)
+          .collection('user goals')
+          .doc(todayDate)
           .set(goals.toMap());
 
       print("Goals saved successfully");
@@ -32,16 +41,31 @@ class Repository {
     }
   }
 
-  // download goals from firestore
+  // upload goals dependency userid
   Future<GoalsModel?> getUserGoals(String userId) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection('goals').doc(userId).get();
-      if (doc.exists) {
-        return GoalsModel.fromMap(doc.data() as Map<String, dynamic>);
+      String todayDate = DateTime.now().toIso8601String().split('T')[0];
+      DocumentSnapshot snapshot = await _firestore
+          .collection('goals')
+          .doc(userId)
+          .collection('user goals')
+          .doc(todayDate)
+          .get();
+
+      if (snapshot.exists) {
+
+        return GoalsModel.fromMap(snapshot.data() as Map<String, dynamic>);
+      } else {
+        print("No goals found for today.");
+        return null;
       }
     } catch (e) {
-      print("Error fetching user goals: $e");
+      print("Error retrieving goals: $e");
+      return null;
     }
-    return null;
   }
+
+
+
+
 }

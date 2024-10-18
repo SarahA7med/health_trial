@@ -5,120 +5,85 @@ import '../Models/goals_model.dart';
 import '../Models/progressmodel.dart';
 import '../Models/water_progress.dart';
 
-class ProgressViewModel  {
-  double? watergoal;
-  String? userId;
-  int? caloriesGoal;
-  int? durationgoal;
-  double? progress;  // Progress value (0 to 1)
-  int? durationwork; // Actual workout duration
-  int? amount;       // Actual water intake amount
-double? watergoalsml;
-  final ProgressRepo _repository = ProgressRepo();
+class ProgressViewModel extends ChangeNotifier {
+ String? userId;
+ double? waterGoalsDaily;
+ int?  caloriesGoalDaily;
+ int? exerciseDurationGoalDaily;
+ List<GoalsModel> _weeklyGoals = [];
+ List<GoalsModel> get weeklyGoals => _weeklyGoals;
+ double _totalWeeklyWaterGoals = 0;
+ double get totalWeeklyWaterGoals => _totalWeeklyWaterGoals;
+ int _totalWeeklyExerciseDuration = 0;
+ int get totalWeeklyExerciseDuration => _totalWeeklyExerciseDuration;
+ List<GoalsModel> _monthlyGoals = [];
+ List<GoalsModel> get monthlyGoals => _monthlyGoals;
+ double _totalMonthlyWaterGoals = 0;
+ double get totalMonthlyWaterGoals => _totalMonthlyWaterGoals;
+ int _totalMonthlyExerciseDuration = 0;
+ int get totalMonthlyExerciseDuration => _totalMonthlyExerciseDuration;
 
+ List<GoalsModel> _yearlyGoals = [];
+ List<GoalsModel> get yearlyGoals => _yearlyGoals;
+ double _totalYearlyWaterGoals = 0;
+ double get totalYearlyWaterGoals => _totalYearlyWaterGoals;
+
+ int _totalYearlyExerciseDuration = 0;
+ int get totalYearlyExerciseDuration => _totalYearlyExerciseDuration;
+
+ final ProgressRepo _repository = ProgressRepo();
+  // user id
   Future<void> fetchUserId() async {
     userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       print('User ID: $userId');
-      await fetchUserGoals();
-      await fetchUserWater();
-      await fetchUserWorkOut();
     } else {
       print('No user ID found');
     }
+    notifyListeners();
   }
-
-  Future<void> fetchUserGoals() async {
+  Future<void> fetchUserGoalsDaily() async {
+    await fetchUserId();
     if (userId != null) {
-      GoalsModel? goals = await _repository.getUserGoals(userId!);
+      GoalsModel? goals = await _repository.getUserGoalsDaily(userId!);
+      print('data complete');
       if (goals != null) {
-        watergoal = goals.waterGoal;
-        caloriesGoal = goals.caloriesGoal;
-        durationgoal = goals.exerciseDurationGoal;
-        watergoalsml=(watergoal!*1000)!;
-        print('Goals fetched: watergoal: $watergoal, caloriesGoal: $caloriesGoal, durationgoal: $durationgoal');
+       waterGoalsDaily = goals.waterGoal;
+       caloriesGoalDaily = goals.caloriesGoal;
+        exerciseDurationGoalDaily = goals.exerciseDurationGoal;
+        notifyListeners();
       } else {
-        print('empty data/user goals');
+        print('empty data/usergoals');
       }
     } else {
-      print('userid null/get goals');
+      print('userid null/getgoals');
     }
   }
+ Future<void> fetchWeeklyGoals(String userId) async {
+   _weeklyGoals = await _repository.getWeeklyGoals(userId);
+   _totalWeeklyWaterGoals = _weeklyGoals.fold(0, (sum, goal) => sum + goal.waterGoal);
+   _totalWeeklyExerciseDuration = _weeklyGoals.fold(0, (sum, goal) => sum + goal.exerciseDurationGoal);
 
-  Future<void> fetchUserWater() async {
-    if (userId != null) {
-      WaterProgress? waterProgress = await _repository.getUserWater(userId!);
-      if (waterProgress != null) {
-        amount = waterProgress.mount;
-        print('Water amount fetched: $amount');
-      } else {
-        print('empty data/user water');
-      }
-    } else {
-      print('userid null/get water');
-    }
-  }
-
-  Future<void> fetchUserWorkOut() async {
-    if (userId != null) {
-      WorkOutModel? workout = await _repository.getUserWorkOut(userId!);
-      if (workout != null) {
-        durationwork = workout.duration;
-        print('Workout duration fetched: $durationwork');
-      } else {
-        print('empty data/user workout');
-      }
-    } else {
-      print('userid null/get workout');
-    }
-  }
-
-  double calculateProgress(double targetduration,double targetwater, double actualduation,double actualwater) {
-    if (targetduration <= 0&&targetwater<=0) return 0;
-    else if  (amount! >=targetwater&& durationwork!>=targetduration) return 1;
-    else
-    return ((actualduation+actualwater) /(targetduration+targetwater) ).clamp(0, 1);
-  }
-
-  Future<double?> calculateDailyProgress() async {
-    double todayWorkout = durationwork?.toDouble() ?? 0.0;
-    double todaywater = amount?.toDouble()?? 0.0;
-    progress = calculateProgress(durationgoal?.toDouble() ?? 0.0,watergoalsml?.toDouble() ?? 0.0, todayWorkout,todaywater);
-    print('Daily Progress: $progress');
-    return progress;
-    //notifyListeners();
-  }
-
-  Future<double?> calculateWeeklyProgress() async {
-    double todayWorkout = durationwork?.toDouble() ?? 0.0;
-    double todaywater = amount?.toDouble()?? 0.0;
-    progress = calculateProgress((durationgoal!*7),(watergoalsml!*7),(todayWorkout*7) ,(todaywater*7));
-    print('weekly Progress: $progress');
-    return progress;
-    //notifyListeners();
-  }
+   notifyListeners();
+ }
+ Future<void> fetchMonthlyGoals(String userId) async {
+   _monthlyGoals = await _repository.getMonthlyGoals(userId);
 
 
-  Future<double?> calculateManthlyProgress() async {
-    double todayWorkout = durationwork?.toDouble() ?? 0.0;
-    double todaywater = amount?.toDouble()?? 0.0;
-    progress = calculateProgress((durationgoal!*30),(watergoalsml!*30),(todayWorkout*30) ,(todaywater*30));
-    print('weekly Progress: $progress');
-    return progress;
-    //notifyListeners();
-  }
+   _totalMonthlyWaterGoals = _monthlyGoals.fold(0, (sum, goal) => sum + goal.waterGoal);
+   _totalMonthlyExerciseDuration = _monthlyGoals.fold(0, (sum, goal) => sum + goal.exerciseDurationGoal);
+
+   notifyListeners();
+ }
+ Future<void> fetchYearlyGoals(String userId) async {
+   _yearlyGoals = await _repository.getYearlyGoals(userId);
 
 
-  Future<double?> calculateYearlyProgress() async {
-    double todayWorkout = durationwork?.toDouble() ?? 0.0;
-    double todaywater = amount?.toDouble()?? 0.0;
-    progress = calculateProgress((durationgoal!*256),(watergoalsml!*256),(todayWorkout*256) ,(todaywater*256));
-    print('weekly Progress: $progress');
-    return progress;
-    //notifyListeners();
-  }
+   _totalYearlyWaterGoals = _yearlyGoals.fold(0, (sum, goal) => sum + goal.waterGoal);
+   _totalYearlyExerciseDuration = _yearlyGoals.fold(0, (sum, goal) => sum + goal.exerciseDurationGoal);
 
-
-
-
+   notifyListeners();
+ }
 }
+
+
