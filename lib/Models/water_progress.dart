@@ -1,7 +1,7 @@
 class WaterProgress {
   final int mount;
 
-  final String timestamp;
+DateTime timestamp;
   final String userId;
 
  WaterProgress({

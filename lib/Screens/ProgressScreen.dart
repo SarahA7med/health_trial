@@ -52,35 +52,26 @@ class _Progress extends State<Progress> {
       month = false;
       week = false;
     }
-    updateWeights();
+    //updateWeights();
   }
 
-  void updateWeights() {
-    // تحديث قيم الوزن بناءً على الاختيار
-   /* if (interval == 'Day') {
-      targetWeight = 70;
-      startWeight = 75;
-      actualWeight = 72;
-      progress = 0.8; // قيمة التقدم لليوم
-    } else if (interval == 'Week') {
-      targetWeight = 68;
-      startWeight = 75;
-      actualWeight = 70;
-      progress = 0.75; // قيمة التقدم للأسبوع
-    } else if (interval == 'Month') {
-      targetWeight = 65;
-      startWeight = 75;
-      actualWeight = 70;
-      progress = 0.65; // قيمة التقدم للشهر
-    } else if (interval == 'Year') {
-      targetWeight = 60;
-      startWeight = 75;
-      actualWeight = 68;
-      progress = 0.5; // قيمة التقدم للسنة
+  void updateProgress(String intervalType) async {
+    double calculatedProgress;
+    if (intervalType == "Day") {
+      calculatedProgress = await progressViewModel.calculateDailyProgress();
+    } else if (intervalType == "Week") {
+      calculatedProgress = await progressViewModel.calculateWeeklyProgress();
+    } else if (intervalType == "Month") {
+      calculatedProgress = await progressViewModel.calculateMonthlyProgress();
     } else {
-      progress = 0;
-    }*/
-    setState(() {}); // إعادة بناء الصفحة لعرض القيم الجديدة
+      calculatedProgress = await progressViewModel.calculateYearlyProgress();
+    }
+
+    setState(() {
+      progress = calculatedProgress;
+      upDataState(intervalType);
+
+    });
   }
 
 
@@ -110,8 +101,7 @@ class _Progress extends State<Progress> {
                   GestureDetector(
                     onTap: () {
                       setState(() async{
-                        progress= await progressViewModel.calculateDailyProgress() as double;
-                        upDataState("Day");
+                        updateProgress('Day');
                       });
                     },
                     child: Container(
@@ -136,8 +126,7 @@ class _Progress extends State<Progress> {
                   GestureDetector(
                     onTap: () {
                       setState(() async {
-                        progress= await progressViewModel.calculateWeeklyProgress() as double;
-                        upDataState("Week");
+                        updateProgress('Week');
                       });
                     },
                     child: Container(
@@ -162,8 +151,8 @@ class _Progress extends State<Progress> {
                   GestureDetector(
                     onTap: () {
                       setState(() async {
-                       progress= await ProgressViewModel().calculateManthlyProgress() as double;
-                        upDataState('Month');
+                        updateProgress('Month');
+
                       });
                     },
                     child: Container(
@@ -188,8 +177,7 @@ class _Progress extends State<Progress> {
                   GestureDetector(
                     onTap: () {
                       setState(() async {
-                        progress= await progressViewModel.calculateYearlyProgress() as double;
-                        upDataState('Year');
+                        updateProgress('Year');
                       });
                     },
                     child: Container(

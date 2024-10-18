@@ -34,6 +34,7 @@ class _WalkingTrackerPageState extends State<WalkingTrackerPage> {
 
   // دالة لإنهاء الجلسة وتخزينها في Firestore
   Future<void> endWorkoutSession() async {
+
     await FirebaseFirestore.instance.collection('workouts').add({
       'user_id': widget.userId, // تخزين معرف المستخدم
       'start_time': workoutStartTime,
