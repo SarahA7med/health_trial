@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:async';
+import 'package:sensors_plus/sensors_plus.dart';
 
 class WalkingTrackerPage extends StatefulWidget {
-  final String? userId; // معرف المستخدم
+  final String? userId;
 
   WalkingTrackerPage({required this.userId});
 
@@ -16,33 +20,96 @@ class _WalkingTrackerPageState extends State<WalkingTrackerPage> {
   Timer? timer;
   DateTime? workoutStartTime;
 
+  // Step counter variables
+  double x = 0.0;
+  double y = 0.0;
+  double z = 0.0;
+  int steps = 0;
+  double previousDistance = 0.0;
+  double caloriesBurned = 0.0;
+
+  // Constants for calorie calculation
+  final double MET = 3.5; // MET value for walking
+  double userWeight = 70.0;
+
   @override
   void initState() {
     super.initState();
-    startWorkoutSession(); // بدء تتبع الوقت
+    startWorkoutSession();
+    startStepTracking();
+    fetchUserWeight();
   }
 
-  // دالة لبدء تتبع الجلسة
+  // Function to start the workout session and timer
   void startWorkoutSession() {
     workoutStartTime = DateTime.now();
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        elapsedTime = elapsedTime + Duration(seconds: 1);
-      });
+      if (mounted) {
+        setState(() {
+          elapsedTime = elapsedTime + Duration(seconds: 1);
+        });
+      }
     });
   }
 
-  // دالة لإنهاء الجلسة وتخزينها في Firestore
+  // Function to track steps using accelerometer
+  void startStepTracking() {
+    SensorsPlatform.instance.accelerometerEvents.listen((event) {
+      if (mounted) {
+        setState(() {
+          x = event.x;
+          y = event.y;
+          z = event.z;
+          double distance = calculateStepDistance(x, y, z);
+          if (distance > 7) {
+            steps++;
+          }
+        });
+      }
+    });
+  }
+
+  // Function to calculate the step distance based on accelerometer data
+  double calculateStepDistance(double x, double y, double z) {
+    double magnitude = sqrt(x * x + y * y + z * z);
+    double modDistance = magnitude - previousDistance;
+    previousDistance = magnitude;
+    return modDistance;
+  }
+
+  // Fetch user weight from Firestore using userId
+  Future<void> fetchUserWeight() async {
+    if (widget.userId != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(widget.userId).get();
+      if (userDoc.exists) {
+        if (mounted) {
+          setState(() {
+            userWeight = (userDoc['weight'] ?? 70.0) as double; // جلب الوزن من الفايرستور، إذا لم يكن موجودًا يتم تعيين الوزن الافتراضي 70 كجم
+          });
+        }
+      }
+    }
+  }
+
+  // Function to calculate the calories burned
+  void calculateCaloriesBurned() {
+    double durationInHours = elapsedTime.inSeconds / 3600;
+    caloriesBurned = (MET * userWeight * durationInHours);
+  }
+
+  // Function to end the workout session and save it to Firestore
   Future<void> endWorkoutSession() async {
+    calculateCaloriesBurned();
 
     await FirebaseFirestore.instance.collection('workouts').add({
-      'user_id': widget.userId, // تخزين معرف المستخدم
+      'user_id': widget.userId,
       'start_time': workoutStartTime,
       'end_time': DateTime.now(),
       'duration': elapsedTime.inSeconds,
+      'calories_burned': caloriesBurned,
     });
 
-    print("Workout session ended and saved to Firestore");
+    print("Workout session ended and saved to Firestore with $caloriesBurned calories burned.");
   }
 
   @override
@@ -51,7 +118,7 @@ class _WalkingTrackerPageState extends State<WalkingTrackerPage> {
     super.dispose();
   }
 
-  // دالة لتنسيق الوقت بصيغة HH:MM:SS
+  // Function to format the time in HH:MM:SS
   String formatTime(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final hours = twoDigits(duration.inHours);
@@ -79,24 +146,71 @@ class _WalkingTrackerPageState extends State<WalkingTrackerPage> {
                 child: Image.asset('assets/walking.gif'), // صورة تحرك
               ),
               const SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF759EFF), // استخدم الديكور هنا
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Time Elapsed: ${formatTime(elapsedTime)}',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+              SizedBox(
+                height: 200,
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDBE4FF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(CupertinoIcons.timer),
+                          SizedBox(height: 5),
+                          Text(
+                            'Time Elapsed',
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            formatTime(elapsedTime),
+                            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF759EFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.directions_walk, color: Colors.white),
+                          Text(
+                            'Steps',
+                            style: TextStyle(fontSize: 24, color: Colors.white),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '$steps',
+                            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 40),
-              ElevatedButton(
+              SizedBox(height: 50),ElevatedButton(
                 onPressed: () async {
                   await endWorkoutSession();
                   Navigator.pop(context);
                 },
-                child: Text('Stop and Save'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF004DFF),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                ),
+                child: Text('Stop and Save', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),

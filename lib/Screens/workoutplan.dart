@@ -16,7 +16,7 @@ class WorkoutPlan extends StatelessWidget {
     ];
 
     String? uid = FirebaseAuth.instance.currentUser?.uid;
-    final List<String> categories = ['Track Walking', 'Running', 'Cardio', 'Water'];
+    final List<String> categories = ['Track Walking', 'Water'];
 
     return Scaffold(
       appBar: AppBar(
