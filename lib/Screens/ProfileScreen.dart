@@ -23,7 +23,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   Future<void> _fetchUserData() async {
     String? uid = FirebaseAuth.instance.currentUser?.uid; // الحصول على uid
     if (uid != null) {
-      var data = await firestoreService.getUserDataByUid(uid); // جلب البيانات باستخدام uid
+      var data = await firestoreService
+          .getUserDataByUid(uid); // جلب البيانات باستخدام uid
       setState(() {
         userData = data;
       });
@@ -35,24 +36,26 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: userData == null
           ? const Center(
-        child: CircularProgressIndicator(), // إذا كانت البيانات غير موجودة، نعرض مؤشر تحميل
-      )
+              child:
+                  CircularProgressIndicator(), // إذا كانت البيانات غير موجودة، نعرض مؤشر تحميل
+            )
           : SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildBody(context),
-          ],
-        ),
-      ),
+              child: Column(
+                children: [
+                  _buildHeader(),
+                  _buildBody(context),
+                ],
+              ),
+            ),
     );
   }
 
   Widget _buildHeader() {
     return Container(
-      height: 200,
+      height: 220,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -87,17 +90,18 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             ),
           ),
           Positioned(
-            top: 20,
+            top: 35,
             left: 20,
             child: CircleAvatar(
               radius: 50,
               backgroundColor: Colors.white,
               child: CircleAvatar(
                 radius: 47,
-                backgroundImage: AssetImage(
-                  userData != null && userData?['profilePicture'] != null
-                      ? 'assets/${userData?['profilePicture']}'
-                      : 'assets/woman.png', // استخدام صورة افتراضية في حال عدم وجود صورة للمستخدم
+                foregroundColor: Colors.white,
+                foregroundImage: AssetImage(
+                  (userData != null && userData?['profilePicture'] != null)
+                      ? '${userData?['profilePicture']}'
+                      : 'assets/empty profile.jpeg', // استخدام صورة افتراضية في حال عدم وجود صورة للمستخدم
                 ),
               ),
             ),
@@ -114,7 +118,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionTitle('User Data'),
-          const SizedBox(height: 10),
           _buildInfoGrid(),
         ],
       ),
@@ -122,14 +125,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.black87,
-      ),
-    );
+    return Container(
+        width: double.infinity,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+          textAlign: TextAlign.center,
+        ));
   }
 
   Widget _buildInfoGrid() {
@@ -137,7 +143,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 2.5,
+      childAspectRatio: 1,
       mainAxisSpacing: 15,
       crossAxisSpacing: 15,
       children: [
@@ -155,7 +161,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   Widget _buildInfoItem(IconData icon, String label, String value) {
     return Container(
       padding: const EdgeInsets.all(10),
-      height: 100, // تحديد ارتفاع العنصر
+      height: 300, // تحديد ارتفاع العنصر
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -171,7 +177,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.blue, size: 30), // تعديل حجم الأيقونة
+          Icon(icon, color: Colors.blue, size: 50), // تعديل حجم الأيقونة
           const SizedBox(height: 5),
           Text(
             label,
