@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:health_trial/ViewModels/progress_viewmodel.dart';
 
 class Progress extends StatefulWidget {
@@ -11,11 +12,11 @@ class Progress extends StatefulWidget {
 }
 
 class _Progress extends State<Progress> {
-  ProgressViewModel progressViewModel=ProgressViewModel();
+  //ProgressViewModel progressViewModel=ProgressViewModel();
   String userName="user";
   double progress = 0;
   Color selectedColor = const Color(0xFF004DFF);
-  Color unselectedColor = const Color(0xFFB1C8FF); // لون غير محدد
+  Color unselectedColor = const Color(0xFFB1C8FF);
   bool day = false;
   double targetWeight = 0;
   double startWeight = 0;
@@ -54,17 +55,24 @@ class _Progress extends State<Progress> {
     }
     //updateWeights();
   }
-
+  @override
+  void initState() {
+    super.initState();
+    updateProgress("Day");
+    updateProgress("Week");
+    updateProgress("Month");
+    updateProgress("Year");
+  }
   void updateProgress(String intervalType) async {
     double calculatedProgress;
     if (intervalType == "Day") {
-      calculatedProgress = await progressViewModel.calculateDailyProgress();
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateDailyProgress();
     } else if (intervalType == "Week") {
-      calculatedProgress = await progressViewModel.calculateWeeklyProgress();
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateWeeklyProgress();
     } else if (intervalType == "Month") {
-      calculatedProgress = await progressViewModel.calculateMonthlyProgress();
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateMonthlyProgress();
     } else {
-      calculatedProgress = await progressViewModel.calculateYearlyProgress();
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateYearlyProgress();
     }
 
     setState(() {
@@ -100,7 +108,7 @@ class _Progress extends State<Progress> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      setState(() async{
+                      setState(() {
                         updateProgress('Day');
                       });
                     },
@@ -125,7 +133,7 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() async {
+                      setState(() {
                         updateProgress('Week');
                       });
                     },
@@ -150,7 +158,7 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() async {
+                      setState(() {
                         updateProgress('Month');
 
                       });
@@ -176,7 +184,7 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() async {
+                      setState(() {
                         updateProgress('Year');
                       });
                     },
@@ -258,16 +266,16 @@ class _Progress extends State<Progress> {
 
 
 
-  Widget buildWeightBox(String title, String value,int index) {
+  /*Widget buildWeightBox(String title, String value,int index) {
     List<Color> colors = [
-      const Color(0xFF759EFF), // اللون الأول
-      const Color(0xFFB1C8FF), // اللون الثاني
-      const Color(0xFF004DFF), // اللون الثالث
+      const Color(0xFF759EFF),
+      const Color(0xFFB1C8FF),
+      const Color(0xFF004DFF),
     ];
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: colors[index % colors.length], // لون المربعات
+        color: colors[index % colors.length],
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -286,4 +294,5 @@ class _Progress extends State<Progress> {
         ],
       ),
     );
-  }}
+  }*/
+}

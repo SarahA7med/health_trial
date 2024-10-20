@@ -1,10 +1,10 @@
 class WaterProgress {
   final int mount;
 
-DateTime timestamp;
+  DateTime timestamp;
   final String userId;
 
- WaterProgress({
+  WaterProgress({
     required this.mount,
     required this.timestamp,
     required this.userId,

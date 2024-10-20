@@ -48,10 +48,10 @@ class ProgressViewModel extends ChangeNotifier {
  int _totalYearlyExerciseDurationGoals = 0;
  int get totalYearlyExerciseDuration => _totalYearlyExerciseDurationGoals;
 
- int dailyDurationWorkout = 0;
- int totalWeeklyDurationWorkout = 0;
- int totalMonthlyDurationWOrkout = 0;
- int totalYearlyDurationWorkout = 0;
+double dailyDurationWorkout = 0;
+double totalWeeklyDurationWorkout = 0;
+double totalMonthlyDurationWOrkout = 0;
+double  totalYearlyDurationWorkout = 0;
  int dailyWaterIntake = 0;
  int totalWeeklyWaterIntake = 0;
  int totalMonthlyWaterIntake = 0;
@@ -76,7 +76,7 @@ class ProgressViewModel extends ChangeNotifier {
       print('data complete');
       if (goals != null) {
        waterGoalsDaily = goals.waterGoal;
-
+       print("data complete goals");
         exerciseDurationGoalDaily = goals.exerciseDurationGoal;
         notifyListeners();
       } else {
@@ -119,8 +119,10 @@ class ProgressViewModel extends ChangeNotifier {
      WorkOutModel? dailyWorkout = await _repository.getDailyWorkout(userId);
      if (dailyWorkout != null) {
        dailyDurationWorkout = dailyWorkout.duration; // Set daily duration
+       print('data complete workout');
      } else {
-       dailyDurationWorkout = 0; // Reset if no workout found
+       dailyDurationWorkout = 0;// Reset if no workout found
+       print('data empty workout');
      }
    } catch (e) {
      print("Error fetching daily workout: $e");
@@ -226,14 +228,14 @@ class ProgressViewModel extends ChangeNotifier {
     // Check if daily goals are set
     if (waterGoalsDaily != null && exerciseDurationGoalDaily != null) {
       // Check if the daily intake meets or exceeds the goals
-      if (dailyWaterIntake >= waterGoalsDaily! && dailyDurationWorkout >= exerciseDurationGoalDaily!) {
+      if (dailyWaterIntake >= (waterGoalsDaily!*1000 )&& dailyDurationWorkout >= (exerciseDurationGoalDaily!*60)) {
         return progress = 1; // Full progress if both goals are met
       } else if (dailyWaterIntake == null && dailyDurationWorkout == null) {
        return progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for water intake and workout duration
-        double waterProgress = dailyWaterIntake / waterGoalsDaily!;
-        double workoutProgress = dailyDurationWorkout / (exerciseDurationGoalDaily ?? 1);
+        double waterProgress = dailyWaterIntake /( waterGoalsDaily!*1000);
+        double workoutProgress = (dailyDurationWorkout/60) / (exerciseDurationGoalDaily ?? 1);
 
         // Calculate average progress
         progress = (waterProgress + workoutProgress) / 2;
@@ -253,14 +255,14 @@ class ProgressViewModel extends ChangeNotifier {
     // Check if weekly goals are set
     if (totalWeeklyWaterGoals != 0 && _totalWeeklyExerciseDurationGoals  != 0) {
       // Check if the total weekly intake meets or exceeds the goals
-      if (totalWeeklyWaterIntake >= totalWeeklyWaterGoals && totalWeeklyDurationWorkout >= _totalWeeklyExerciseDurationGoals ) {
+      if (totalWeeklyWaterIntake >= (totalWeeklyWaterGoals*1000) && totalWeeklyDurationWorkout >= (_totalWeeklyExerciseDurationGoals*60 )) {
        return progress = 1; // Full progress if both goals are met
       } else if (totalWeeklyWaterIntake == 0 && totalWeeklyDurationWorkout == 0) {
          return progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for weekly water intake and workout duration
-        double waterProgress = totalWeeklyWaterIntake / totalWeeklyWaterGoals;
-     double workoutProgress = totalWeeklyDurationWorkout / _totalWeeklyExerciseDurationGoals ;
+        double waterProgress = totalWeeklyWaterIntake / (totalWeeklyWaterGoals*1000);
+     double workoutProgress = (totalWeeklyDurationWorkout/60) / _totalWeeklyExerciseDurationGoals ;
 
         // Calculate average progress
         progress = (waterProgress + workoutProgress) / 2;
@@ -279,14 +281,14 @@ class ProgressViewModel extends ChangeNotifier {
     // Check if monthly goals are set
     if (totalMonthlyWaterGoals != 0 && _totalMonthlyWaterGoals != 0) {
       // Check if the total monthly intake meets or exceeds the goals
-      if (totalMonthlyWaterIntake >= totalMonthlyWaterGoals && totalMonthlyDurationWOrkout >= _totalMonthlyWaterGoals) {
+      if (totalMonthlyWaterIntake >= (totalMonthlyWaterGoals*1000) && totalMonthlyDurationWOrkout >=( _totalMonthlyWaterGoals*60)) {
        return progress = 1; // Full progress if both goals are met
       } else if (totalMonthlyWaterIntake == 0 && totalMonthlyDurationWOrkout == 0) {
       return  progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for monthly water intake and workout duration
-        double waterProgress = totalMonthlyWaterIntake / totalMonthlyWaterGoals;
-        double workoutProgress = totalMonthlyDurationWOrkout / _totalMonthlyWaterGoals;
+        double waterProgress = totalMonthlyWaterIntake / (totalMonthlyWaterGoals*1000);
+        double workoutProgress =(totalMonthlyDurationWOrkout/60) / _totalMonthlyWaterGoals;
 
         // Calculate average progress
         progress = (waterProgress + workoutProgress) / 2;
@@ -306,14 +308,14 @@ double calculateYearlyProgress() {
     if (totalYearlyWaterGoals != 0 && _totalYearlyExerciseDurationGoals != 0) {
       print("year goals ");
       // Check if the total yearly intake meets or exceeds the goals
-      if (totalYearlyWaterIntake >= totalYearlyWaterGoals && totalYearlyDurationWorkout >= _totalYearlyExerciseDurationGoals ) {
+      if (totalYearlyWaterIntake >= (totalYearlyWaterGoals*1000) && totalYearlyDurationWorkout >= (_totalYearlyExerciseDurationGoals*60) ) {
       return  progress = 1; // Full progress if both goals are met
       } else if (totalYearlyWaterIntake == 0 && totalYearlyDurationWorkout == 0) {
        return progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for yearly water intake and workout duration
-        double waterProgress = totalYearlyWaterIntake / totalYearlyWaterGoals;
-        double workoutProgress = totalYearlyDurationWorkout / _totalYearlyExerciseDurationGoals ;
+        double waterProgress = totalYearlyWaterIntake / (totalYearlyWaterGoals*1000);
+        double workoutProgress = (totalYearlyDurationWorkout/60) / _totalYearlyExerciseDurationGoals ;
 
         // Calculate average progress
         progress = (waterProgress + workoutProgress) / 2;

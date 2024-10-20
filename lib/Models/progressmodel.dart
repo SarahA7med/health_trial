@@ -1,6 +1,6 @@
 class WorkOutModel {
-  final int calories_burned;
-  final int duration;
+  final double calories_burned;
+  final double duration;
   DateTime end_time;
   DateTime start_time;
 final int steps;

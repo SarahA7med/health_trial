@@ -112,7 +112,10 @@ class ProgressRepo{
 
       // Check if there is an entry for today's workout
       if (snapshot.docs.isNotEmpty) {
-        return WorkOutModel.fromMap(snapshot.docs.first.data() as Map<String, dynamic>);
+        Map<String, dynamic> data = snapshot.docs.first.data() as Map<String, dynamic>;
+        data['start_time'] = (data['start_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        data['end_time'] = (data['end_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        return WorkOutModel.fromMap(data);
       }
 
       return null; // Return null if no workout found
@@ -122,6 +125,7 @@ class ProgressRepo{
       return null; // Return null in case of an error
     }
   }
+
 
   // Function to retrieve all workout sessions for the week (returns a list of WorkoutModel)
   Future<List<WorkOutModel>> getWeeklyWorkouts(String userId) async {
@@ -136,13 +140,19 @@ class ProgressRepo{
           .get();
 
       // Convert the retrieved data into a list of WorkoutModel objects
-      return snapshot.docs.map((doc) => WorkOutModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        data['start_time'] = (data['start_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        data['end_time'] = (data['end_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        return WorkOutModel.fromMap(data);
+      }).toList();
 
     } catch (e) {
       print('Error retrieving weekly workouts: $e');
       return []; // Return an empty list in case of an error
     }
   }
+
 
   // Function to retrieve all workout sessions for the month (returns a list of WorkoutModel)
   Future<List<WorkOutModel>> getMonthlyWorkouts(String userId) async {
@@ -157,13 +167,19 @@ class ProgressRepo{
           .get();
 
       // Convert the retrieved data into a list of WorkoutModel objects
-      return snapshot.docs.map((doc) => WorkOutModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        data['start_time'] = (data['start_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        data['end_time'] = (data['end_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        return WorkOutModel.fromMap(data);
+      }).toList();
 
     } catch (e) {
       print('Error retrieving monthly workouts: $e');
       return []; // Return an empty list in case of an error
     }
   }
+
 
   // Function to retrieve all workout sessions for the year (returns a list of WorkoutModel)
   Future<List<WorkOutModel>> getYearlyWorkouts(String userId) async {
@@ -178,13 +194,19 @@ class ProgressRepo{
           .get();
 
       // Convert the retrieved data into a list of WorkoutModel objects
-      return snapshot.docs.map((doc) => WorkOutModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        data['start_time'] = (data['start_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        data['end_time'] = (data['end_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
+        return WorkOutModel.fromMap(data);
+      }).toList();
 
     } catch (e) {
       print('Error retrieving yearly workouts: $e');
       return []; // Return an empty list in case of an error
     }
   }
+
 
   Future<WaterProgress?> getDailyWaterIntake(String userId) async {
     try {
@@ -198,9 +220,11 @@ class ProgressRepo{
           .limit(1)
           .get();
 
-
       if (snapshot.docs.isNotEmpty) {
-        return WaterProgress.fromMap(snapshot.docs.first.data() as Map<String, dynamic>);
+
+        var data = snapshot.docs.first.data() as Map<String, dynamic>;
+        data['timestamp'] = (data['timestamp'] as Timestamp).toDate();
+        return WaterProgress.fromMap(data);
       }
 
       return null;
@@ -210,6 +234,8 @@ class ProgressRepo{
       return null;
     }
   }
+
+
   Future<List<WaterProgress>> getWeeklyWaterIntake(String userId) async {
     try {
       DateTime today = DateTime.now();
@@ -221,15 +247,19 @@ class ProgressRepo{
           .orderBy('timestamp')
           .get();
 
+      return snapshot.docs.map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
 
-      return snapshot.docs.map((doc) => WaterProgress.fromMap(doc.data() as Map<String, dynamic>)).toList();
+        data['timestamp'] = (data['timestamp'] as Timestamp).toDate();
+        return WaterProgress.fromMap(data);
+      }).toList();
 
     } catch (e) {
       print('Error retrieving weekly water intake: $e');
       return [];
     }
-
   }
+
 
   Future<List<WaterProgress>> getMonthlyWaterIntake(String userId) async {
     try {
@@ -242,15 +272,20 @@ class ProgressRepo{
           .orderBy('timestamp')
           .get();
 
+      return snapshot.docs.map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
 
-      return snapshot.docs.map((doc) => WaterProgress.fromMap(doc.data() as Map<String, dynamic>)).toList();
+        data['timestamp'] = (data['timestamp'] as Timestamp).toDate();
+        return WaterProgress.fromMap(data);
+      }).toList();
 
     } catch (e) {
       print('Error retrieving monthly water intake: $e');
       return [];
     }
-
   }
+
+
   Future<List<WaterProgress>> getYearlyWaterIntake(String userId) async {
     try {
       DateTime today = DateTime.now();
@@ -262,12 +297,14 @@ class ProgressRepo{
           .orderBy('timestamp')
           .get();
 
+      return snapshot.docs.map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
 
-      return snapshot.docs.map((doc) => WaterProgress.fromMap(doc.data() as Map<String, dynamic>)).toList();
+        data['timestamp'] = (data['timestamp'] as Timestamp).toDate();
+        return WaterProgress.fromMap(data);
+      }).toList();
 
     } catch (e) {
       print('Error retrieving yearly water intake: $e');
       return [];
-    }
-  }
-}
+    }}}
