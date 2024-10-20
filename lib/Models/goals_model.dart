@@ -2,11 +2,12 @@ class GoalsModel {
   final double waterGoal;
   final int caloriesGoal;
   final int exerciseDurationGoal;
-
+   String date;
   GoalsModel({
     required this.waterGoal,
     required this.caloriesGoal,
     required this.exerciseDurationGoal,
+    required this.date,
   });
 
   // transforme map or jison to object
@@ -15,6 +16,7 @@ class GoalsModel {
       waterGoal: map['waterGoal'] ?? 0,
       caloriesGoal: map['caloriesGoal'] ?? 0,
       exerciseDurationGoal: map['exerciseDurationGoal'] ?? 0,
+     date: map['date'] ?? 0,
     );
   }
 
@@ -24,6 +26,7 @@ class GoalsModel {
       'waterGoal': waterGoal,
       'caloriesGoal': caloriesGoal,
       'exerciseDurationGoal': exerciseDurationGoal,
+      'date':date
     };
   }
 }

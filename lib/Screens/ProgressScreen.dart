@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:health_trial/ViewModels/progress_viewmodel.dart';
 
 class Progress extends StatefulWidget {
@@ -11,11 +12,11 @@ class Progress extends StatefulWidget {
 }
 
 class _Progress extends State<Progress> {
-  ProgressViewModel progressViewModel=ProgressViewModel();
+  //ProgressViewModel progressViewModel=ProgressViewModel();
   String userName="user";
   double progress = 0;
   Color selectedColor = const Color(0xFF004DFF);
-  Color unselectedColor = const Color(0xFFB1C8FF); // لون غير محدد
+  Color unselectedColor = const Color(0xFFB1C8FF);
   bool day = false;
   double targetWeight = 0;
   double startWeight = 0;
@@ -52,35 +53,33 @@ class _Progress extends State<Progress> {
       month = false;
       week = false;
     }
-    updateWeights();
+    //updateWeights();
   }
-
-  void updateWeights() {
-    // تحديث قيم الوزن بناءً على الاختيار
-   /* if (interval == 'Day') {
-      targetWeight = 70;
-      startWeight = 75;
-      actualWeight = 72;
-      progress = 0.8; // قيمة التقدم لليوم
-    } else if (interval == 'Week') {
-      targetWeight = 68;
-      startWeight = 75;
-      actualWeight = 70;
-      progress = 0.75; // قيمة التقدم للأسبوع
-    } else if (interval == 'Month') {
-      targetWeight = 65;
-      startWeight = 75;
-      actualWeight = 70;
-      progress = 0.65; // قيمة التقدم للشهر
-    } else if (interval == 'Year') {
-      targetWeight = 60;
-      startWeight = 75;
-      actualWeight = 68;
-      progress = 0.5; // قيمة التقدم للسنة
+  @override
+  void initState() {
+    super.initState();
+    updateProgress("Day");
+    updateProgress("Week");
+    updateProgress("Month");
+    updateProgress("Year");
+  }
+  void updateProgress(String intervalType) async {
+    double calculatedProgress;
+    if (intervalType == "Day") {
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateDailyProgress();
+    } else if (intervalType == "Week") {
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateWeeklyProgress();
+    } else if (intervalType == "Month") {
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateMonthlyProgress();
     } else {
-      progress = 0;
-    }*/
-    setState(() {}); // إعادة بناء الصفحة لعرض القيم الجديدة
+      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateYearlyProgress();
+    }
+
+    setState(() {
+      progress = calculatedProgress;
+      upDataState(intervalType);
+
+    });
   }
 
 
@@ -109,9 +108,8 @@ class _Progress extends State<Progress> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      setState(() async{
-                        progress= await progressViewModel.calculateDailyProgress() as double;
-                        upDataState("Day");
+                      setState(() {
+                        updateProgress('Day');
                       });
                     },
                     child: Container(
@@ -135,9 +133,8 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() async {
-                        progress= await progressViewModel.calculateWeeklyProgress() as double;
-                        upDataState("Week");
+                      setState(() {
+                        updateProgress('Week');
                       });
                     },
                     child: Container(
@@ -161,9 +158,9 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() async {
-                       progress= await ProgressViewModel().calculateManthlyProgress() as double;
-                        upDataState('Month');
+                      setState(() {
+                        updateProgress('Month');
+
                       });
                     },
                     child: Container(
@@ -187,9 +184,8 @@ class _Progress extends State<Progress> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() async {
-                        progress= await progressViewModel.calculateYearlyProgress() as double;
-                        upDataState('Year');
+                      setState(() {
+                        updateProgress('Year');
                       });
                     },
                     child: Container(
@@ -270,16 +266,16 @@ class _Progress extends State<Progress> {
 
 
 
-  Widget buildWeightBox(String title, String value,int index) {
+  /*Widget buildWeightBox(String title, String value,int index) {
     List<Color> colors = [
-      const Color(0xFF759EFF), // اللون الأول
-      const Color(0xFFB1C8FF), // اللون الثاني
-      const Color(0xFF004DFF), // اللون الثالث
+      const Color(0xFF759EFF),
+      const Color(0xFFB1C8FF),
+      const Color(0xFF004DFF),
     ];
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: colors[index % colors.length], // لون المربعات
+        color: colors[index % colors.length],
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -298,4 +294,5 @@ class _Progress extends State<Progress> {
         ],
       ),
     );
-  }}
+  }*/
+}

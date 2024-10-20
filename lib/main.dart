@@ -16,7 +16,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) =>UserViewModel()..fetchUserGoals()),
-      //  ChangeNotifierProvider(create: (_) => ProgressViewModel()),
+       ChangeNotifierProvider(create: (_) => ProgressViewModel()),
       ],
       child: MyApp(),
     ),

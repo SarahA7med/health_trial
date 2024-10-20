@@ -4,7 +4,7 @@ import 'package:health_trial/Screens/profile_picture.dart';
 class GenderSelection extends StatefulWidget {
   final String name;
   final String email;
-  const GenderSelection({super.key,required this.name,required this.email});
+  const GenderSelection({super.key, required this.name, required this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +24,8 @@ class _GenderSelectionState extends State<GenderSelection> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+              color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -138,11 +139,31 @@ class _GenderSelectionState extends State<GenderSelection> {
           const Spacer(),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ProfilePicture(name: widget.name,email:widget.email,gender: selectedGender),
-                ),
-              );
+              if (selectedGender.isEmpty) {
+                // Show a SnackBar if no gender is selected
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text('Please select a gender',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              } else {
+                // Navigate to the next screen if a gender is selected
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePicture(
+                      name: widget.name,
+                      email: widget.email,
+                      gender: selectedGender,
+                    ),
+                  ),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xff004DFF),

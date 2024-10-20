@@ -8,7 +8,11 @@ class ProfilePicture extends StatefulWidget {
   final String gender;
   final String name;
   final String email;
-  const ProfilePicture({super.key, required this.name,required this.email,required this.gender});
+  const ProfilePicture(
+      {super.key,
+      required this.name,
+      required this.email,
+      required this.gender});
 
   @override
   State<StatefulWidget> createState() {
@@ -24,6 +28,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
     'assets/man.png',
     'assets/woman.png',
     'assets/girl.png',
+    'assets/man2.jpeg'
   ];
 
   @override
@@ -32,7 +37,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+              color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -116,7 +122,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
                     children: [
                       const Text(
                         "Select Your Age",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       NumberPicker(
@@ -125,7 +132,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
                         maxValue: 100,
                         itemHeight: 50,
                         axis: Axis.vertical,
-                        onChanged: (value) => setState(() => _currentAge = value),
+                        onChanged: (value) =>
+                            setState(() => _currentAge = value),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.blueAccent),

@@ -165,7 +165,7 @@ class Homescreen extends StatelessWidget {
                       return;
                     }
 
-                    // التحقق من مدة التمرين (بين 10 و120 دقيقة)
+
                     int? exerciseDurationGoal = int.tryParse(durationInput);
                     if (exerciseDurationGoal == null || exerciseDurationGoal < 10 || exerciseDurationGoal > 120) {
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -26,6 +26,7 @@ class UserViewModel extends ChangeNotifier {
     } else {
       print('No user ID found');
     }
+    notifyListeners();
   }
 
   // userdata from repo
@@ -48,37 +49,17 @@ class UserViewModel extends ChangeNotifier {
     }
   }
 
-  // goals from repo
-  Future<void> fetchUserGoals() async {
-    if (userId != null) {
-      GoalsModel? goals = await _repository.getUserGoals(userId!);
-      print('data complete');
-      if (goals != null) {
-        waterGoal = goals.waterGoal;
-        caloriesGoal = goals.caloriesGoal;
-        exerciseDurationGoal = goals.exerciseDurationGoal;
-        notifyListeners();
-      } else {
-        print('empty data/usergoals');
-      }
-    } else {
-      print('userid null/getgoals');
-    }
-  }
+
 
   // save goals
   Future<void> saveUserGoals(double waterGoal, int caloriesGoal, int exerciseDurationGoal, BuildContext context) async {
     if (userId != null) {
-      try {
-        GoalsModel goals = GoalsModel(
-          waterGoal: waterGoal,
-          caloriesGoal: caloriesGoal,
-          exerciseDurationGoal: exerciseDurationGoal,
-        );
+     try {
 
-        await _repository.saveUserGoals(userId!, goals);
+
+        await _repository.saveUserGoals(userId!,waterGoal, caloriesGoal,  exerciseDurationGoal);
         await fetchUserGoals();
-
+notifyListeners();
         // عرض SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -93,6 +74,24 @@ class UserViewModel extends ChangeNotifier {
       }
     } else {
       print("User ID is null, cannot save goals.");
+    }
+  }
+  // goals from repo
+  Future<void> fetchUserGoals() async {
+    await fetchUserId();
+    if (userId != null) {
+      GoalsModel? goals = await _repository.getUserGoals(userId!);
+      print('data complete');
+      if (goals != null) {
+        waterGoal = goals.waterGoal;
+        caloriesGoal = goals.caloriesGoal;
+        exerciseDurationGoal = goals.exerciseDurationGoal;
+        notifyListeners();
+      } else {
+        print('empty data/usergoals');
+      }
+    } else {
+      print('userid null/getgoals');
     }
   }
 }

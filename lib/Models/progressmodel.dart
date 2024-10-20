@@ -1,8 +1,8 @@
 class WorkOutModel {
-  final int calories_burned;
-  final int duration;
-  final String end_time;
-  final String start_time;
+  final double calories_burned;
+  final double duration;
+  DateTime end_time;
+  DateTime start_time;
 final int steps;
  WorkOutModel({
     required this.calories_burned,
