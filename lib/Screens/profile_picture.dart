@@ -25,10 +25,13 @@ class _ProfilePictureState extends State<ProfilePicture> {
   int _currentAge = 18;
 
   final List<String> _imagePaths = [
-    'assets/man.png',
-    'assets/woman.png',
-    'assets/girl.png',
-    'assets/man2.jpeg'
+    'assets/girl1.jpeg',
+    'assets/girl2.jpeg',
+    'assets/girl3.jpeg',
+    'assets/boy3.jpeg',
+    'assets/boy2.jpeg',
+    'assets/boy1.jpeg',
+
   ];
 
   @override
