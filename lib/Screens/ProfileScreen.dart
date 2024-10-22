@@ -38,8 +38,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   Future<void> _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => AuthScreen()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => AuthScreen()),
+      );
       print("User loged out");
     } catch (e) {
       print(e.toString());
