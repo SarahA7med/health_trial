@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'Home_State.dart';
+
 class Homescreen extends StatelessWidget {
   final TextEditingController waterController = TextEditingController();
   final TextEditingController caloriesController = TextEditingController();
@@ -18,8 +20,8 @@ class Homescreen extends StatelessWidget {
       create: (context) => UserViewModel()..fetchUserData(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Fitness Tracker',style:TextStyle(color: Colors.white),),
-          backgroundColor: Color(0xFF004DFF),
+          title: const Text('Fitness Tracker',style:TextStyle(color: Colors.white),),
+          backgroundColor: const Color(0xFF004DFF),
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -40,14 +42,14 @@ class Homescreen extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Image(
+                                const Image(
                                   image: AssetImage("assets/waving-hand.png"),
                                   height: 50,
                                   width: 50,
                                 ),
                                 Text(
                                   "Hello  ${viewModel.userName ?? ' '}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 24,
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.bold,
@@ -55,8 +57,8 @@ class Homescreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 8),
-                            Text(
+                            const SizedBox(height: 8),
+                            const Text(
                               "Set Your Goals",
                               style: TextStyle(
                                 fontSize: 18,
@@ -65,7 +67,7 @@ class Homescreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Icon(Icons.add_alert_sharp, size: 30, color: Colors.grey),
+                        const Icon(Icons.add_alert_sharp, size: 30, color: Colors.grey),
                       ],
                     );
                   },
@@ -78,61 +80,88 @@ class Homescreen extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Your Goals:",
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text("Water Goal: ${viewModel.waterGoal ?? 'Not Set'} liters"),
                         Text("Calories Goal: ${viewModel.caloriesGoal ?? 'Not Set'} calories"),
                         Text("Exercise Duration Goal: ${viewModel.exerciseDurationGoal ?? 'Not Set'} minutes"),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                       ],
                     );
                   },
                 ),
 
                 // Water Intake Field
-                TextFormField(
-                  controller: waterController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: "Water Intake (in liters)",
-                    hintText: "Enter amount of water (liter)",
-                    suffixIcon: Icon(Icons.local_drink),
+                Card(
+                  color: const Color(0xffB1c8ff),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16.0,right: 16,bottom: 30,top: 30),
+                    child: TextFormField(
+                      controller: waterController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: const InputDecoration(
+                        labelText: "Water Intake (in liters)",
+                        hintText: "Enter amount of water (liter)",
+                        suffixIcon: Icon(Icons.local_drink),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // Calories Intake Field
-                TextFormField(
-                  controller: caloriesController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "Calories Intake",
-                    hintText: "Enter calories (e.g. 2000)",
-                    suffixIcon: Icon(Icons.fastfood),
+                Card(
+                  color: const Color(0xff759eff),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16.0,right: 16,bottom: 30,top: 30),                    child: TextFormField(
+                      controller: caloriesController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Calories Intake",
+                        hintText: "Enter calories (e.g. 2000)",
+                        suffixIcon: Icon(Icons.fastfood),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // Exercise Duration Field
-                TextFormField(
-                  controller: exerciseDurationController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "Exercise Duration (in minutes)",
-                    hintText: "Enter duration (e.g. 30)",
-                    suffixIcon: Icon(Icons.fitness_center),
+                Card(
+                  color: const Color(0xffDbe4ff),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16.0,right: 16,bottom: 30,top: 30),
+                    child: TextFormField(
+                      controller: exerciseDurationController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Exercise Duration (in minutes)",
+                        hintText: "Enter duration (e.g. 30)",
+                        suffixIcon: Icon(Icons.fitness_center),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // save goals button
                 ElevatedButton(
+
                   onPressed: () async {
 
                     String waterInput = waterController.text;
@@ -143,7 +172,7 @@ class Homescreen extends StatelessWidget {
                     double? waterGoal = double.tryParse(waterInput);
                     if (waterGoal == null || waterGoal < 1.0 || waterGoal > 7.0||waterGoal<0) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text("Invalid water input. Must be between 1 and 7 liters."),
                           backgroundColor: Colors.red,
                         ),
@@ -156,7 +185,7 @@ class Homescreen extends StatelessWidget {
                     int? caloriesGoal = int.tryParse(caloriesInput);
                     if (caloriesGoal == null || caloriesGoal <= 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text("Invalid colories input. Must be  positive and not null ."),
                           backgroundColor: Colors.red,
                         ),
@@ -169,7 +198,7 @@ class Homescreen extends StatelessWidget {
                     int? exerciseDurationGoal = int.tryParse(durationInput);
                     if (exerciseDurationGoal == null || exerciseDurationGoal < 10 || exerciseDurationGoal > 120) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text("Invalid water input. Must be between 10 and 120 minutes."),
                           backgroundColor: Colors.red,
                         ),
@@ -183,10 +212,12 @@ class Homescreen extends StatelessWidget {
                         .saveUserGoals(waterGoal, caloriesGoal, exerciseDurationGoal,context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF004DFF),
+                    backgroundColor: const Color(0xFF004DFF),
+
                   ),
-                  child: Text('Save Goals', style: TextStyle(color: Colors.white)),
+                  child: const Text('Save Goals', style: TextStyle(color: Colors.white)),
                 ),
+
               ],
             ),
           ),

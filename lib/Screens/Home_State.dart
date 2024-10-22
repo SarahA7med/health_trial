@@ -3,6 +3,7 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'HomeScreen.dart';
 import 'ProfileScreen.dart';
 import 'ProgressScreen.dart';
+import 'dash_board.dart';
 import 'workoutplan.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,7 +22,8 @@ final _items=[
   SalomonBottomBarItem(icon: const Icon(Icons.person), title:const Text('Profile'))
 ];
   final List<Widget> _screens = [
-    Homescreen(),
+    DashBoard(),
+
     const WorkoutPlan(), // Ensure this class is named correctly
   const Progress(), // Ensure this class is named correctly
     const ProfileWidget( ), // Ensure this class is named correctly

@@ -30,7 +30,27 @@ class GetStartScreen extends StatelessWidget {
               const SizedBox(height: 10,),
               const   Center(
                 child:  Text(
-                  "Thanks for taking your time to create account with us.Now this is the fun part,",
+                  "Thanks for taking your time to ",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 21,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              const   Center(
+                child:  Text(
+                  " create account with us.",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 21,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              const   Center(
+                child:  Text(
+                  "Now this is the fun part,",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 21,

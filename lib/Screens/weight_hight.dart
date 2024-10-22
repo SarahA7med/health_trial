@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'Home_State.dart';
+import 'dash_board.dart';
 
 class WeightHight extends StatefulWidget {
   final String name;
@@ -78,17 +79,29 @@ class _WeightHightState extends State<WeightHight> {
               style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Slider(
-              value: hightVal,
-              min: 100,
-              max: 220,
-              divisions: 120,
-              label: hightVal.round().toString(),
-              onChanged: (double value) {
-                setState(() {
-                  hightVal = value;
-                });
-              },
+            Card(
+              color: const Color(0xffB1c8ff),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0,right: 16,bottom: 50,top: 50),
+                child: Slider(
+                  value: hightVal,
+                  min: 100,
+                  max: 220,
+                  divisions: 120,
+                  activeColor: const Color(0xFF004dff),
+                  inactiveColor: const Color(0xffDBE4ff),
+                  label: hightVal.round().toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                      hightVal = value;
+                    });
+                  },
+                ),
+              ),
             ),
             Text(
               "${hightVal.round()} cm",
@@ -100,17 +113,28 @@ class _WeightHightState extends State<WeightHight> {
               style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Slider(
-              value: weightval,
-              min: 30,
-              max: 200,
-              divisions: 170,
-              label: weightval.round().toString(),
-              onChanged: (double value) {
-                setState(() {
-                  weightval = value;
-                });
-              },
+            Card(
+              color: const Color(0xff759eff),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0,right: 16,bottom: 50,top: 50),
+                child: Slider(
+                  value: weightval,
+                  min: 30,
+                  max: 200,
+                  divisions: 170,
+                  activeColor: const Color(0xFF004dff),
+                  inactiveColor: const Color(0xffDBE4ff),
+                  label: weightval.round().toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                      weightval = value;
+                    });
+                  },
+                ),
+              ),
             ),
             Text(
               "${weightval.round()} kg",
@@ -133,7 +157,7 @@ class _WeightHightState extends State<WeightHight> {
                     weight: weightval,
                   );
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    MaterialPageRoute(builder: (context) =>  const HomePage()),
                   );
                 } else {
                   print('User is not logged in. Cannot retrieve uid.');

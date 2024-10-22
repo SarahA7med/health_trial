@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'Home_State.dart';
 import 'get_start_screen.dart';
 
 class OnBoardingScreen extends StatelessWidget {
@@ -55,7 +56,8 @@ class OnBoardingScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.black, fontSize: 22),
                   ),
                 ),
-              )
+              ),
+
             ],
           ),
         ),

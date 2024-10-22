@@ -1,11 +1,11 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:health_trial/Screens/HomeScreen.dart';
 import 'package:health_trial/Screens/Home_State.dart';
 import 'package:health_trial/Screens/gender_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dash_board.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -13,12 +13,12 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-
-
-
   Future<void> fetchUserData(String userId) async {
     try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
 
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
@@ -181,43 +181,43 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 onPressed: () async {
-    if (loginFormKey.currentState!.validate()) {
-    try {
-    UserCredential user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-    email: loginEmailController.text,
-    password: loginPasswordController.text);
+                  if (loginFormKey.currentState!.validate()) {
+                    try {
+                      UserCredential user = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: loginEmailController.text,
+                              password: loginPasswordController.text);
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
 
-    await prefs.setString('token', user.user?.uid ?? '');
-    String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
-    print(token);
-    print(user.user?.uid ?? '');
-    ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-    backgroundColor: Colors.green,
-    content: Padding(
-    padding: EdgeInsets.symmetric(vertical: 15.0),
-    child: Text(
-    'Welcome to Health Trial',
-    style: TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: Colors.white,
-    ),
-    ),
-    ),
-    ),
-    );
+                      await prefs.setString('token', user.user?.uid ?? '');
+                      String? token =
+                          await FirebaseAuth.instance.currentUser?.getIdToken();
+                      print(token);
+                      print(user.user?.uid ?? '');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 15.0),
+                            child: Text(
+                              'Welcome to Health Trial',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
 
-
-    Future.delayed(const Duration(seconds: 3), () {
-    Navigator.of(context).push(MaterialPageRoute(
-    builder: (context) => HomePage()));
-    });
-    }
-     on FirebaseAuthException catch (e) {
+                      Future.delayed(const Duration(seconds: 3), () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const HomePage()));
+                      });
+                    } on FirebaseAuthException catch (e) {
                       String message;
                       if (e.code == 'user-not-found') {
                         message = 'No user found for that email.';
@@ -293,6 +293,7 @@ class _AuthScreenState extends State<AuthScreen> {
         ));
   }
 
+/////////////////////////////////////////////////////////////////////////////////////////
   Widget buildSignUpForm() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -373,8 +374,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     );
 
                     // حفظ التوكن في SharedPreferences
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    await prefs.setString('token', userCredential.user?.uid ?? '');
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setString(
+                        'token', userCredential.user?.uid ?? '');
 
                     // عرض رسالة الترحيب
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -392,12 +395,18 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     );
 
-
                     Future.delayed(const Duration(seconds: 3), () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => GenderSelection(name: nameController.text, email: signupEmailController.text,)));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GenderSelection(
+                            name: nameController.text,
+                            email: signupEmailController.text,
+
+                          ),
+                        ),
+                      );
                     });
-              } on FirebaseAuthException catch (e) {
+                  } on FirebaseAuthException catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: Colors.red,

@@ -48,9 +48,9 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
               duration: const Duration(milliseconds: 500), // Animation duration
               width: 150, // Set width to match the cup
               height: cupHeight, // Dynamically change height based on water consumed
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.lightBlue, // Water color
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15.0),
                   topRight: Radius.circular(15.0),
                 ), // Curved top edge to simulate water rising
