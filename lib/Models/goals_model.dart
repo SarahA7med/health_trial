@@ -13,7 +13,7 @@ class GoalsModel {
   // transforme map or jison to object
   factory GoalsModel.fromMap(Map<String, dynamic> map) {
     return GoalsModel(
-      waterGoal: map['waterGoal'] ?? 0,
+      waterGoal: (map['waterGoal'] ?? 0).toDouble(),
       caloriesGoal: map['caloriesGoal'] ?? 0,
       exerciseDurationGoal: map['exerciseDurationGoal'] ?? 0,
      date: map['date'] ?? 0,

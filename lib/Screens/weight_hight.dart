@@ -136,7 +136,6 @@ class _WeightHightState extends State<WeightHight> {
                     MaterialPageRoute(builder: (context) => const HomePage()),
                   );
                 } else {
-                  // معالجة الحالة التي يكون فيها uid null (مثلاً إذا لم يكن المستخدم مسجلاً الدخول)
                   print('User is not logged in. Cannot retrieve uid.');
                 }
               },

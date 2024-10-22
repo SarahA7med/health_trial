@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class WaterTrackerPage extends StatefulWidget {
   final String? userId; // Pass the userId if needed
@@ -17,16 +18,15 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void addWater() async {
+  void addWater(int water) async {
     setState(() {
-      totalWater += 150; // Add 150 ml to total water
-      cupHeight = (totalWater / 1500) * 150; // Update the cup height based on total water
+      totalWater += water;
+      cupHeight = (totalWater / 1500) * 300; // Adjusted for full cup height
     });
 
-    // Save the updated water intake to Firestore
     await _firestore.collection('waterIntake').add({
       'userId': widget.userId,
-      'amount': 150,
+      'amount': totalWater,
       'timestamp': FieldValue.serverTimestamp(), // To record the time of addition
     });
   }
@@ -40,40 +40,62 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
         automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.bottomCenter, // Align the water fill at the bottom
           children: [
-            // Display the total water consumed
-            Text(
-              'Total Water: $totalWater ml',
-              style: const TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
 
-            // Water in the cup
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300), // Animation duration
-              width: 100, // Adjusted for cup width
-              height: cupHeight, // Update the height based on water consumed
+              duration: const Duration(milliseconds: 500), // Animation duration
+              width: 150, // Set width to match the cup
+              height: cupHeight, // Dynamically change height based on water consumed
               decoration: BoxDecoration(
                 color: Colors.lightBlue, // Water color
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(15.0),
-                  bottomRight: Radius.circular(15.0),
-                ),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15.0),
+                  topRight: Radius.circular(15.0),
+                ), // Curved top edge to simulate water rising
               ),
-            ),
-            const SizedBox(height: 20),
-            // Button to add water
-            ElevatedButton(
-              onPressed: addWater, // Add water when the button is pressed
-              child: const Text('Add 150 ml'),
             ),
           ],
         ),
+      ),
+      floatingActionButton: SpeedDial(
+        child: const Icon(
+          Icons.add, color: Colors.white,
+        ),
+        activeIcon: Icons.close,
+        iconTheme: const IconThemeData(color: Colors.white),
+        buttonSize: const Size(58, 58),
+        curve: Curves.bounceIn,
+        children: [
+          SpeedDialChild(
+            elevation: 0,
+            child: Image.asset('assets/cup.png'),
+            labelWidget: const Text('150ml', style: TextStyle(color: Colors.blue)),
+            backgroundColor: const Color(0xFFEBF2FD),
+            onTap: () {
+              addWater(150); // Add 150ml of water
+            },
+          ),
+          SpeedDialChild(
+            elevation: 0,
+            child: Image.asset('assets/Bottele.png'),
+            labelWidget: const Text('200ml', style: TextStyle(color: Colors.blue)),
+            backgroundColor: const Color(0xFFEBF2FD),
+            onTap: () {
+              addWater(200); // Add 200ml of water
+            },
+          ),
+          SpeedDialChild(
+            elevation: 0,
+            child: Image.asset('assets/500ml.png'),
+            labelWidget: const Text('500ml', style: TextStyle(color: Colors.blue)),
+            backgroundColor: const Color(0xFFEBF2FD),
+            onTap: () {
+              addWater(500); // Add 500ml of water
+            },
+          ),
+        ],
       ),
     );
   }
