@@ -52,7 +52,7 @@ class _WeightHightState extends State<WeightHight> {
         'weight': weight,
         'uid': uid, // تخزين uid للمستخدم
       });
-      print('Data uploaded successfully');
+     // print('Data uploaded successfully');
     } catch (e) {
       print('Error uploading data: $e');
     }
@@ -61,8 +61,8 @@ class _WeightHightState extends State<WeightHight> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.black),
           onPressed: () {

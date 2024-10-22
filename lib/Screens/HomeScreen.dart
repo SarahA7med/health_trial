@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../ViewModels/goals_viewmodel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'Home_State.dart';
+
+
 
 class Homescreen extends StatelessWidget {
   final TextEditingController waterController = TextEditingController();
@@ -67,7 +65,7 @@ class Homescreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const Icon(Icons.add_alert_sharp, size: 30, color: Colors.grey),
+
                       ],
                     );
                   },

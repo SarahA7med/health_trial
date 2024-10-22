@@ -19,6 +19,7 @@ class DashBoard extends StatelessWidget {
       create: (context) => UserViewModel()..fetchUserData(),
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('Fitness Tracker',style:TextStyle(color: Colors.white),),
           backgroundColor: const Color(0xFF004DFF),
         ),

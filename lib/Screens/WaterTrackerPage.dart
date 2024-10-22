@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class WaterTrackerPage extends StatefulWidget {
@@ -27,7 +27,8 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
     await _firestore.collection('waterIntake').add({
       'userId': widget.userId,
       'amount': totalWater,
-      'timestamp': FieldValue.serverTimestamp(), // To record the time of addition
+      'timestamp': FieldValue.serverTimestamp(),
+      // To record the time of addition
     });
   }
 
@@ -37,17 +38,21 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
       appBar: AppBar(
         backgroundColor: Colors.white, // AppBar color
         title: const Text('💧 Water Tracker'),
-        automaticallyImplyLeading: false,
+
       ),
       body: Center(
         child: Stack(
-          alignment: Alignment.bottomCenter, // Align the water fill at the bottom
-          children: [
 
+          alignment: Alignment.bottomCenter,
+          // Align the water fill at the bottom
+          children: [
             AnimatedContainer(
-              duration: const Duration(milliseconds: 500), // Animation duration
-              width: 150, // Set width to match the cup
-              height: cupHeight, // Dynamically change height based on water consumed
+              duration: const Duration(milliseconds: 500),
+              // Animation duration
+              width: 150,
+              // Set width to match the cup
+              height: cupHeight,
+              // Dynamically change height based on water consumed
               decoration: const BoxDecoration(
                 color: Colors.lightBlue, // Water color
                 borderRadius: BorderRadius.only(
@@ -60,8 +65,10 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
         ),
       ),
       floatingActionButton: SpeedDial(
+        overlayColor: const Color((0xFF004DFF)),
         child: const Icon(
-          Icons.add, color: Colors.white,
+          Icons.add,
+          color: Colors.white,
         ),
         activeIcon: Icons.close,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -71,7 +78,8 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
           SpeedDialChild(
             elevation: 0,
             child: Image.asset('assets/cup.png'),
-            labelWidget: const Text('150ml', style: TextStyle(color: Colors.blue)),
+            labelWidget:
+                const Text('150ml', style: TextStyle(color: Colors.blue)),
             backgroundColor: const Color(0xFFEBF2FD),
             onTap: () {
               addWater(150); // Add 150ml of water
@@ -80,7 +88,8 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
           SpeedDialChild(
             elevation: 0,
             child: Image.asset('assets/Bottele.png'),
-            labelWidget: const Text('200ml', style: TextStyle(color: Colors.blue)),
+            labelWidget:
+                const Text('200ml', style: TextStyle(color: Colors.blue)),
             backgroundColor: const Color(0xFFEBF2FD),
             onTap: () {
               addWater(200); // Add 200ml of water
@@ -89,7 +98,8 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
           SpeedDialChild(
             elevation: 0,
             child: Image.asset('assets/500ml.png'),
-            labelWidget: const Text('500ml', style: TextStyle(color: Colors.blue)),
+            labelWidget:
+                const Text('500ml', style: TextStyle(color: Colors.blue)),
             backgroundColor: const Color(0xFFEBF2FD),
             onTap: () {
               addWater(500); // Add 500ml of water
