@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:health_trial/Screens/get_start_screen.dart';
+
+import '../firestore_service.dart';
+import 'SignUp.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -30,6 +32,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       });
     } else {
       print('User is not logged in. Cannot retrieve uid.');
+    }
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => AuthScreen()));
+      print("User loged out");
+    } catch (e) {
+      print(e.toString());
     }
   }
 
@@ -106,6 +119,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               ),
             ),
           ),
+          Positioned(
+              top: 50,
+              right: 20,
+              child: IconButton(
+                  onPressed: () {
+                    _signOut();
+                  },
+                  icon: Icon(
+                    Icons.logout_outlined,
+                    size: 30,
+                  )))
         ],
       ),
     );
@@ -152,8 +176,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             '${(userData?['height'] ?? 0).toStringAsFixed(1)} cm'),
         _buildInfoItem(Icons.monitor_weight, 'Weight',
             '${(userData?['weight'] ?? 0).toStringAsFixed(1)} kg'),
-        _buildInfoItem(Icons.person, 'Gender',
-            '${userData?['gender'] ?? 'N/A'}'), // عرض النص مباشرةً بدون toStringAsFixed
+        _buildInfoItem(
+            Icons.person, 'Gender', '${userData?['gender'] ?? 'N/A'}'),
+        // عرض النص مباشرةً بدون toStringAsFixed
       ],
     );
   }

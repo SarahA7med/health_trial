@@ -38,11 +38,9 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
       appBar: AppBar(
         backgroundColor: Colors.white, // AppBar color
         title: const Text('💧 Water Tracker'),
-
       ),
       body: Center(
         child: Stack(
-
           alignment: Alignment.bottomCenter,
           // Align the water fill at the bottom
           children: [
@@ -65,7 +63,7 @@ class _WaterTrackerPageState extends State<WaterTrackerPage> {
         ),
       ),
       floatingActionButton: SpeedDial(
-        overlayColor: const Color((0xFF004DFF)),
+        backgroundColor: const Color(0xFF004DFF),
         child: const Icon(
           Icons.add,
           color: Colors.white,

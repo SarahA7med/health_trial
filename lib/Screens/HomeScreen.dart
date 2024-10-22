@@ -127,7 +127,7 @@ class Homescreen extends StatelessWidget {
                       controller: caloriesController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: "Calories Intake",
+                        labelText: "Calories burned",
                         hintText: "Enter calories (e.g. 2000)",
                         suffixIcon: Icon(Icons.fastfood),
                       ),
