@@ -7,11 +7,13 @@ class Progress extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
+
     return _Progress();
   }
 }
 
 class _Progress extends State<Progress> {
+
   //ProgressViewModel progressViewModel=ProgressViewModel();
   String userName="user";
   double progress = 0;
@@ -26,6 +28,9 @@ class _Progress extends State<Progress> {
   bool week = false;
   bool year = false;
   int selectedIndex = 0;
+  double?waterProgress=0;
+  double?caloriesProgress=0;
+  double?durationProgress=0;
 
   void upDataState(String interval1) {
     if (interval1 == "Day") {
@@ -66,22 +71,83 @@ class _Progress extends State<Progress> {
   void updateProgress(String intervalType) async {
     double calculatedProgress;
     if (intervalType == "Day") {
-      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateDailyProgress();
+      calculatedProgress =
+      await Provider.of<ProgressViewModel>(context, listen: false)
+          .calculateDailyProgress();
     } else if (intervalType == "Week") {
-      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateWeeklyProgress();
+      calculatedProgress =
+      await Provider.of<ProgressViewModel>(context, listen: false)
+          .calculateWeeklyProgress();
     } else if (intervalType == "Month") {
-      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateMonthlyProgress();
+      calculatedProgress =
+      await Provider.of<ProgressViewModel>(context, listen: false)
+          .calculateMonthlyProgress();
     } else {
-      calculatedProgress = await Provider.of<ProgressViewModel>(context, listen: false).calculateYearlyProgress();
+      calculatedProgress =
+      await Provider.of<ProgressViewModel>(context, listen: false)
+          .calculateYearlyProgress();
     }
 
     setState(() {
       progress = calculatedProgress;
       upDataState(intervalType);
-
     });
   }
+void upDateProgressDetails(String determine)async{
+    switch(determine){
+      case 'Day':{
+       waterProgress=await Provider.of<ProgressViewModel>(context, listen: false).waterProgressDaily;
+       durationProgress=await Provider.of<ProgressViewModel>(context, listen: false).workoutProgressDaily;
+       caloriesProgress=await Provider.of<ProgressViewModel>(context, listen: false).caloriesProgressDaily;
+       if(waterProgress!>=1) {
+         waterProgress = 1;
+       }
+       if(durationProgress!>=1){
+         durationProgress=1;
+       }
+       if(caloriesProgress!>=1){
+         caloriesProgress==1;
+       }
+        break;
+      }
+      case 'Week':{
+      waterProgress=await Provider.of<ProgressViewModel>(context, listen: false).waterProgressWeekly;
+       durationProgress=await Provider.of<ProgressViewModel>(context, listen: false).workoutProgressWeekly;
+       caloriesProgress=await Provider.of<ProgressViewModel>(context, listen: false).caloriesWeeklyProgress;
+      if(waterProgress!>=1) {
+        waterProgress = 1;
+      }
+      if(durationProgress!>=1){
+        durationProgress=1;
+      }
+      if(caloriesProgress!>=1){
+        caloriesProgress==1;
+      }
+        break;
+      }
+      case 'Month':{
+       waterProgress=await Provider.of<ProgressViewModel>(context, listen: false).waterProgressMontly;
+       durationProgress=await Provider.of<ProgressViewModel>(context, listen: false).workoutProgressMonthly;
+       caloriesProgress=await Provider.of<ProgressViewModel>(context, listen: false).caloriesManthlyProgress;
+        break;
+      }
+    case 'Year':{
+  waterProgress=await Provider.of<ProgressViewModel>(context, listen: false).waterProgressYearly;
+ durationProgress=await Provider.of<ProgressViewModel>(context, listen: false).workoutProgressYearly;
+caloriesProgress=await Provider.of<ProgressViewModel>(context, listen: false).caloriesYealryProgress;
+  if(waterProgress!>=1) {
+    waterProgress = 1;
+  }
+  if(durationProgress!>=1){
+    durationProgress=1;
+  }
+  if(caloriesProgress!>=1){
+    caloriesProgress==1;
+  }
+  break;
+  }
 
+}}
 
 
 
@@ -110,6 +176,7 @@ class _Progress extends State<Progress> {
                     onTap: () {
                       setState(() {
                         updateProgress('Day');
+                        upDateProgressDetails('Day');
                       });
                     },
                     child: Container(
@@ -135,6 +202,7 @@ class _Progress extends State<Progress> {
                     onTap: () {
                       setState(() {
                         updateProgress('Week');
+                        upDateProgressDetails('Week');
                       });
                     },
                     child: Container(
@@ -160,6 +228,7 @@ class _Progress extends State<Progress> {
                     onTap: () {
                       setState(() {
                         updateProgress('Month');
+                        upDateProgressDetails('Month');
 
                       });
                     },
@@ -186,6 +255,7 @@ class _Progress extends State<Progress> {
                     onTap: () {
                       setState(() {
                         updateProgress('Year');
+                        upDateProgressDetails('Year');
                       });
                     },
                     child: Container(
@@ -235,64 +305,80 @@ class _Progress extends State<Progress> {
             ),
             const SizedBox(height: 30),
 
-            Text('Workouts done: ${(progress*100).toInt()}/100', style: const TextStyle(fontSize: 16)),
+            Text('Total Progress: ${(progress*100).toInt()}/100', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            //Text(
-              //'Great Job $userName',
-              //style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-           // ),
-          //  const Text('Successfully completed Day 4 of training',
-              //  style: TextStyle(fontSize: 14)),
-            const SizedBox(height: 50),
-            // Weight Information (Three Boxes using GridView)
-           /* Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                padding: const EdgeInsets.all(10),
-                children: [
-                  buildWeightBox('Target Weight', '$targetWeight kg',0),
-                  buildWeightBox('Start Weight', '$startWeight kg',1),
-                  buildWeightBox('Actual Weight', '$actualWeight kg',2),
-                ],
-              ),
-            ),*/
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator(
+                          value:caloriesProgress , // Change this to the specific progress value for each chart
+                          strokeWidth: 12,
+                          backgroundColor: Colors.grey.shade300,
+                          valueColor: AlwaysStoppedAnimation<Color>(selectedColor),
+                        ),
+                      ),
+                      Text(
+                        'calories progress  ${(caloriesProgress! * 100).toInt()}%',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator(
+                          value: durationProgress, // Change this to the specific progress value for each chart
+                          strokeWidth: 12,
+                          backgroundColor: Colors.grey.shade300,
+                          valueColor: AlwaysStoppedAnimation<Color>(selectedColor),
+                        ),
+                      ),
+                      Text(
+                        'duration progress ${(durationProgress! * 100).toInt()}%',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator(
+                          value: waterProgress, // Change this to the specific progress value for each chart
+                          strokeWidth: 12,
+                          backgroundColor: Colors.grey.shade300,
+                          valueColor: AlwaysStoppedAnimation<Color>(selectedColor),
+                        ),
+                      ),
+                      Text(
+                        'water progress ${(waterProgress! * 100).toInt()}%',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
-
-
-
-  /*Widget buildWeightBox(String title, String value,int index) {
-    List<Color> colors = [
-      const Color(0xFF759EFF),
-      const Color(0xFFB1C8FF),
-      const Color(0xFF004DFF),
-    ];
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: colors[index % colors.length],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            value,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }*/
 }

@@ -33,7 +33,7 @@ class Repository {
           .doc(userId)
           .collection('user goals')
           .doc(todayDate)
-          .set(goals.toMap());
+          .set(goals.toMap(),SetOptions(merge:true));
 
       print("Goals saved successfully");
     } catch (e) {

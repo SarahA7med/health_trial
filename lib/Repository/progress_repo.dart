@@ -98,34 +98,32 @@ class ProgressRepo{
   }
 
   // Function to retrieve the latest workout session for the day (returns a WorkoutModel)
-  Future<WorkOutModel?> getDailyWorkout(String userId) async {
+  Future<List<WorkOutModel>> getDailyWorkout(String userId) async {
     try {
       DateTime today = DateTime.now();
       DateTime startOfDay = DateTime(today.year, today.month, today.day); // Start of the day
+      DateTime endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59); // End of the day
 
       QuerySnapshot snapshot = await _firestore.collection('workouts')
           .where('user_id', isEqualTo: userId)
-          .where('start_time', isGreaterThanOrEqualTo: startOfDay)
+          .where('start_time', isGreaterThanOrEqualTo: startOfDay) // Check if start_time is greater than or equal to the start of the day
+          .where('start_time', isLessThanOrEqualTo: endOfDay) // Check if start_time is less than or equal to the end of the day
           .orderBy('start_time', descending: true) // Order results by latest
-          .limit(1) // Get only one entry
           .get();
 
-      // Check if there is an entry for today's workout
-      if (snapshot.docs.isNotEmpty) {
-        Map<String, dynamic> data = snapshot.docs.first.data() as Map<String, dynamic>;
+      // Convert retrieved data into a list of WorkOutModel
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         data['start_time'] = (data['start_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
         data['end_time'] = (data['end_time'] as Timestamp).toDate(); // Convert Timestamp to DateTime
         return WorkOutModel.fromMap(data);
-      }
-
-      return null; // Return null if no workout found
+      }).toList();
 
     } catch (e) {
-      print('Error retrieving daily workout: $e');
-      return null; // Return null in case of an error
+      print('Error retrieving daily workouts: $e');
+      return []; // Return an empty list in case of an error
     }
   }
-
 
   // Function to retrieve all workout sessions for the week (returns a list of WorkoutModel)
   Future<List<WorkOutModel>> getWeeklyWorkouts(String userId) async {
@@ -208,35 +206,43 @@ class ProgressRepo{
   }
 
 
-  Future<WaterProgress?> getDailyWaterIntake(String userId) async {
+  Future<List<WaterProgress>> getDailyWaterIntake(String userId) async {
     try {
+
       DateTime today = DateTime.now();
+
       DateTime startOfDay = DateTime(today.year, today.month, today.day);
+
+      DateTime endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59);
+
 
       QuerySnapshot snapshot = await _firestore.collection('waterIntake')
           .where('userId', isEqualTo: userId)
           .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+          .where('timestamp', isLessThanOrEqualTo: endOfDay)
           .orderBy('timestamp', descending: true)
-          .limit(1)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-
-        var data = snapshot.docs.first.data() as Map<String, dynamic>;
-        data['timestamp'] = (data['timestamp'] as Timestamp).toDate();
-        return WaterProgress.fromMap(data);
+        return snapshot.docs.map((doc) {
+          var data = doc.data() as Map<String, dynamic>;
+          data['timestamp'] = (data['timestamp'] as Timestamp).toDate();
+          return WaterProgress.fromMap(data);
+        }).toList();
+      } else {
+        print('No water intake records found for user: $userId today');
+        return []; // Return an empty list if no records found
       }
-
-      return null;
-
     } catch (e) {
       print('Error retrieving daily water intake: $e');
-      return null;
+      return [];
     }
   }
 
 
+
   Future<List<WaterProgress>> getWeeklyWaterIntake(String userId) async {
+    print("water $userId ");
     try {
       DateTime today = DateTime.now();
       DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));

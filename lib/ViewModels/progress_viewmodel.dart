@@ -70,6 +70,18 @@ int totalMonthlyDurationWorkout = 0;
  double totalMonthlyCaloriesBurned = 0;
   double totalYearlyCaloriesBurned = 0;
 
+  double? workoutProgressYearly=0;
+   double? caloriesYealryProgress=0;
+   double? waterProgressYearly=0;
+  double waterProgressMontly=0;
+  double workoutProgressMonthly=0;
+  double caloriesManthlyProgress=0;
+  double?waterProgressWeekly=0;
+  double?workoutProgressWeekly=0;
+  double? caloriesWeeklyProgress=0;
+  double?caloriesProgressDaily=0;
+  double? waterProgressDaily=0;
+  double?workoutProgressDaily=0;
   final ProgressRepo _repository = ProgressRepo();
 
   // Fetch user ID
@@ -103,6 +115,7 @@ int totalMonthlyDurationWorkout = 0;
 
   // Fetch weekly goals including calories burned
   Future<void> fetchWeeklyGoals(String userId) async {
+    print("userid $userId");
     _weeklyGoals = await _repository.getWeeklyGoals(userId);
     _totalWeeklyWaterGoals = _weeklyGoals.fold(0, (sum, goal) => sum + goal.waterGoal);
     _totalWeeklyExerciseDurationGoals = _weeklyGoals.fold(0, (sum, goal) => sum + goal.exerciseDurationGoal);
@@ -131,11 +144,12 @@ int totalMonthlyDurationWorkout = 0;
   // Fetch daily workout including calories burned
   Future<void> fetchDailyWorkout(String userId) async {
     try {
-     WorkOutModel? dailyWorkout = await _repository.getDailyWorkout(userId);
+    List<WorkOutModel> dailyWorkout = await _repository.getDailyWorkout(userId);
+    print(dailyWorkout);
       if (dailyWorkout != null) {
-        dailyDurationWorkout = dailyWorkout.duration;
-        print("$dailyDurationWorkout");
-        dailyCaloriesBurned = dailyWorkout.calories_burned; // Fetch calories burned
+        dailyDurationWorkout = dailyWorkout.fold(0, (sum,workout)=>sum+workout.duration);
+        print(" workout $dailyDurationWorkout");
+        dailyCaloriesBurned = dailyWorkout.fold(0, (sum,workout)=>sum+workout.calories_burned); // Fetch calories burned
         print('Workout data fetched');
       } else {
         dailyDurationWorkout = 0;
@@ -195,11 +209,14 @@ int totalMonthlyDurationWorkout = 0;
   // Fetch daily water intake
   Future<void> fetchDailyWaterIntake(String userId) async {
     try {
-      WaterProgress? dailyWater = await _repository.getDailyWaterIntake(userId);
+     List< WaterProgress>dailyWater = await _repository.getDailyWaterIntake(userId);
+     print("water $dailyWater");
       if (dailyWater != null) {
-        dailyWaterIntake = dailyWater.mount;
+        dailyWaterIntake = dailyWater.fold(0, (sum, water) => sum + water.amount);
+        print(" water $dailyWaterIntake");
       } else {
         dailyWaterIntake = 0;
+        print("water $dailyWaterIntake");
       }
     } catch (e) {
       print("Error fetching daily water intake: $e");
@@ -212,7 +229,8 @@ int totalMonthlyDurationWorkout = 0;
   Future<void> fetchWeeklyWaterIntake(String userId) async {
     try {
       List<WaterProgress> weeklyWater = await _repository.getWeeklyWaterIntake(userId);
-      totalWeeklyWaterIntake = weeklyWater.fold(0, (sum, water) => sum + water.mount);
+      totalWeeklyWaterIntake = weeklyWater.fold(0, (sum, water) => sum + water.amount);
+      print(" water $totalWeeklyWaterIntake");
     } catch (e) {
       print("Error fetching weekly water intake: $e");
       totalWeeklyWaterIntake = 0;
@@ -224,7 +242,7 @@ int totalMonthlyDurationWorkout = 0;
   Future<void> fetchMonthlyWaterIntake(String userId) async {
     try {
       List<WaterProgress> monthlyWater = await _repository.getMonthlyWaterIntake(userId);
-      totalMonthlyWaterIntake = monthlyWater.fold(0, (sum, water) => sum + water.mount);
+      totalMonthlyWaterIntake = monthlyWater.fold(0, (sum, water) => sum + water.amount);
     } catch (e) {
       print("Error fetching monthly water intake: $e");
       totalMonthlyWaterIntake = 0;
@@ -236,7 +254,7 @@ int totalMonthlyDurationWorkout = 0;
   Future<void> fetchYearlyWaterIntake(String userId) async {
     try {
       List<WaterProgress> yearlyWater = await _repository.getYearlyWaterIntake(userId);
-      totalYearlyWaterIntake = yearlyWater.fold(0, (sum, water) => sum + water.mount);
+      totalYearlyWaterIntake = yearlyWater.fold(0, (sum, water) => sum + water.amount);
     } catch (e) {
       print("Error fetching yearly water intake: $e");
       totalYearlyWaterIntake = 0;
@@ -257,17 +275,18 @@ int totalMonthlyDurationWorkout = 0;
         return progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for water intake and workout duration
-        double waterProgress = dailyWaterIntake /( waterGoalsDaily!*1000);
-        double workoutProgress = (dailyDurationWorkout/60) / (exerciseDurationGoalDaily ?? 1);
-         double caloriesBurnedProgress=dailyCaloriesBurned/calorieGoalDaily!;
+       waterProgressDaily = dailyWaterIntake /( waterGoalsDaily!*1000) ;
+       workoutProgressDaily = (dailyDurationWorkout/60) / (exerciseDurationGoalDaily ?? 1);
+         caloriesProgressDaily=dailyCaloriesBurned/calorieGoalDaily!;
+       notifyListeners();
         // Calculate average progress
-        progress = (waterProgress + workoutProgress+ caloriesBurnedProgress) /3;
+        progress = (waterProgressDaily!.clamp(0,1) + workoutProgressDaily!.clamp(0,1)+ caloriesProgressDaily!.clamp(0,1)) *(1/3);
         return progress = progress!.clamp(0, 1); // Ensure the value is between 0 and 1
       }
     } else {
       return progress = 0; // Reset progress if goals are not set
     }
-    notifyListeners(); // Notify listeners to update UI
+    notifyListeners();
   }
   double calculateWeeklyProgress() {
     fetchUserId();
@@ -283,12 +302,13 @@ int totalMonthlyDurationWorkout = 0;
         return progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for weekly water intake and workout duration
-        double waterProgress = totalWeeklyWaterIntake / (totalWeeklyWaterGoals*1000);
+        waterProgressWeekly = totalWeeklyWaterIntake / (totalWeeklyWaterGoals*1000);
 
-        double workoutProgress = (totalWeeklyDurationWorkout/60) / _totalWeeklyExerciseDurationGoals ;
-         double caloriesBurnedWeeklyProgress=totalWeeklyCaloriesBurned/totalWeeklyCalorieGoals;
+        workoutProgressWeekly = (totalWeeklyDurationWorkout/60) / _totalWeeklyExerciseDurationGoals ;
+        caloriesWeeklyProgress=totalWeeklyCaloriesBurned/totalWeeklyCalorieGoals;
+        notifyListeners();
         // Calculate average progress
-        progress = (waterProgress + workoutProgress+caloriesBurnedWeeklyProgress) / 3;
+        progress = (waterProgressWeekly!.clamp(0,1) + workoutProgressWeekly!.clamp(0,1)+caloriesWeeklyProgress!.clamp(0,1)) *(1/3);
         return progress = progress!.clamp(0, 1); // Ensure the value is between 0 and 1
       }
     } else {
@@ -310,11 +330,12 @@ int totalMonthlyDurationWorkout = 0;
         return  progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for monthly water intake and workout duration
-        double waterProgress = totalMonthlyWaterIntake / (totalMonthlyWaterGoals*1000);
-        double workoutProgress =(totalMonthlyDurationWorkout/60) / _totalMonthlyExerciseDurationGoals;
-        double caloriesburnedManthlyProgress=totalMonthlyCaloriesBurned/totalMonthlyCalorieGoals;
+       waterProgressMontly = totalMonthlyWaterIntake / (totalMonthlyWaterGoals*1000);
+         workoutProgressMonthly =(totalMonthlyDurationWorkout/60) / _totalMonthlyExerciseDurationGoals;
+        caloriesManthlyProgress=totalMonthlyCaloriesBurned/totalMonthlyCalorieGoals;
+       notifyListeners();
         // Calculate average progress
-        progress = (waterProgress + workoutProgress+caloriesburnedManthlyProgress) /3;
+        progress = (waterProgressMontly.clamp(0,1) + workoutProgressMonthly.clamp(0,1)+caloriesManthlyProgress.clamp(0,1)) *(1/3);
         return   progress = progress!.clamp(0, 1); // Ensure the value is between 0 and 1
       }
     } else {
@@ -337,11 +358,12 @@ int totalMonthlyDurationWorkout = 0;
         return progress = 0; // Reset progress if no intake or duration is found
       } else {
         // Calculate individual progress for yearly water intake and workout duration
-        double waterProgress = totalYearlyWaterIntake / (totalYearlyWaterGoals*1000);
-        double workoutProgress = (totalYearlyDurationWorkout/60) / _totalYearlyExerciseDurationGoals ;
-        double caloriesYealryProgress=totalYearlyCaloriesBurned/totalYearlyCalorieGoals;
+       waterProgressYearly = totalYearlyWaterIntake / (totalYearlyWaterGoals*1000);
+        workoutProgressYearly = (totalYearlyDurationWorkout/60) / _totalYearlyExerciseDurationGoals ;
+        caloriesYealryProgress=totalYearlyCaloriesBurned/totalYearlyCalorieGoals;
+       notifyListeners();
         // Calculate average progress
-        progress = (waterProgress + workoutProgress+caloriesYealryProgress) / 3;
+        progress = (waterProgressYearly!.clamp(0, 1)+ workoutProgressYearly!.clamp(0, 1)+caloriesYealryProgress!.clamp(0, 1)) *(1/3);
         return  progress = progress!.clamp(0, 1); // Ensure the value is between 0 and 1
       }
     } else {
@@ -349,6 +371,5 @@ int totalMonthlyDurationWorkout = 0;
     }
     notifyListeners();   // Notify listeners to update UI
   }
-
-
 }
+
